@@ -1,0 +1,62 @@
+apply plugin: 'com.android.application'
+
+android {
+    compileSdkVersion 25
+    buildToolsVersion "25.0.2"
+    defaultConfig {
+        applicationId "rafael.com.br.lanchonete"
+        minSdkVersion 15
+        targetSdkVersion 25
+        versionCode 1
+        versionName "1.0"
+        testInstrumentationRunner "android.support.test.runner.AndroidJUnitRunner"
+    }
+    buildTypes {
+        release {
+            minifyEnabled false
+            proguardFiles getDefaultProguardFile('proguard-android.txt'), 'proguard-rules.pro'
+        }
+    }
+
+    productFlavors {
+        dev {
+            minSdkVersion 19
+            applicationId 'rafael.com.br.lanchonete.dev'
+            targetSdkVersion 25
+            testInstrumentationRunner 'android.support.test.runner.AndroidJUnitRunner'
+            versionNameSuffix '-dev'
+        }
+        homolog {
+            applicationId 'rafael.com.br.lanchonete.homolog'
+            versionNameSuffix '-homolog'
+            minSdkVersion 19
+            targetSdkVersion 25
+            testInstrumentationRunner 'android.support.test.runner.AndroidJUnitRunner'
+        }
+        prod {
+            minSdkVersion 19
+            applicationId 'rafael.com.br.lanchonete'
+            targetSdkVersion 25
+            versionNameSuffix '-prod'
+            testInstrumentationRunner 'android.support.test.runner.AndroidJUnitRunner'
+        }
+    }
+}
+
+dependencies {
+    compile fileTree(include: ['*.jar'], dir: 'libs')
+    androidTestCompile('com.android.support.test.espresso:espresso-core:2.2.2', {
+        exclude group: 'com.android.support', module: 'support-annotations'
+    })
+
+    compile 'com.squareup.okhttp3:okhttp:3.8.1'
+    compile 'com.squareup.retrofit2:retrofit:2.3.0'
+    compile 'com.android.support:appcompat-v7:25.1.0'
+    compile 'com.google.dagger:dagger:2.11'
+    compile 'com.squareup.picasso:picasso:2.5.2'
+    compile 'com.squareup.retrofit2:converter-gson:2.3.0'
+    compile 'com.jakewharton.picasso:picasso2-okhttp3-downloader:1.1.0'
+
+    annotationProcessor 'com.google.dagger:dagger-compiler:2.11'
+    testCompile 'junit:junit:4.12'
+}
