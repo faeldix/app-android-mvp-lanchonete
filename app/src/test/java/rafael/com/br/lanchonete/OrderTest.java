@@ -137,6 +137,25 @@ public class OrderTest {
         Assert.assertEquals(expected, order.getFinalPrice());
     }
 
+    @Test
+    public void applyTheThreeDiscountAtTheSameTime(){
+        Order order = new Order(DataSource.comAlface);
 
+        order.addIngredient(DataSource.carne);
+        order.addIngredient(DataSource.carne);
+        order.addIngredient(DataSource.carne);
+
+        order.addIngredient(DataSource.queijo);
+        order.addIngredient(DataSource.queijo);
+        order.addIngredient(DataSource.queijo);
+
+        BigDecimal light = DataSource.alface.getPrice().multiply(new BigDecimal(0.1)).add(DataSource.alface.getPrice());
+        BigDecimal lotOfMeat = DataSource.carne.getPrice().multiply(new BigDecimal(2));
+        BigDecimal lotOfCheese = DataSource.queijo.getPrice().multiply(new BigDecimal(2));
+
+        BigDecimal expected = light.add(lotOfCheese).add(lotOfMeat);
+
+        Assert.assertEquals(expected, order.getFinalPrice());
+    }
 
 }
