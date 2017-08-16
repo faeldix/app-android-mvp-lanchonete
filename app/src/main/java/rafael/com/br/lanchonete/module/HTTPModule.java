@@ -38,7 +38,8 @@ public class HTTPModule {
         return new Cache(file, 50000000); //50mb de cache
     }
 
-    @Provides @Singleton
+    @Provides
+    @Singleton
     public OkHttpClient provideOkHttp(final Cache cache, final Interceptor interceptor){
         return new OkHttpClient().newBuilder()
                 .addNetworkInterceptor(interceptor)
@@ -46,7 +47,8 @@ public class HTTPModule {
                 .build();
     }
 
-    @Provides @Singleton
+    @Provides
+    @Singleton
     public Interceptor provideCacheInterceptor(final Context context){
         return new Interceptor() {
             @Override
@@ -71,19 +73,22 @@ public class HTTPModule {
         };
     }
 
-    @Provides @Singleton
+    @Provides
+    @Singleton
     public API provideAPI(Retrofit retrofit){
         return retrofit.create(API.class);
     }
 
-    @Provides @Singleton
+    @Provides
+    @Singleton
     public Retrofit provideRetrofit(OkHttpClient http, Gson gson) {
         return new Retrofit.Builder()
                 .baseUrl(BuildConfig.SERVER_URL).client(http)
                 .addConverterFactory(GsonConverterFactory.create(gson)).build();
     }
 
-    @Provides @Singleton
+    @Provides
+    @Singleton
     public Picasso providePicasso(Context context, OkHttpClient client){
         return new Picasso.Builder(context)
                 .downloader(new OkHttp3Downloader(client))

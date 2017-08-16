@@ -11,9 +11,10 @@ import java.util.List;
 
 public class Order {
 
-    public static final Double LIGHT_DISCOUNT = 0.1d;
+    public static final BigDecimal LIGHT_DISCOUNT = new BigDecimal("0.1");
+
     public static final int NUMBER_OF_MEAT_DISCOUNT = 3;
-    public static final int NUMBER_OF_CHEEASE_DISCOUNT = 3;
+    public static final int NUMBER_OF_CHEESE_DISCOUNT = 3;
 
     private Lunch lunch;
     private List<Ingredient> extras = new ArrayList<Ingredient>();
@@ -49,6 +50,8 @@ public class Order {
         return Collections.unmodifiableList(extras);
     }
 
+    //TODO make a cache for this value
+
     public BigDecimal getPrice(){
         BigDecimal normal = lunch.getPrice();
         BigDecimal custom = BigDecimal.ZERO;
@@ -60,21 +63,22 @@ public class Order {
         return normal.add(custom);
     }
 
+    //TODO make a cache for this value
+
     public BigDecimal getFinalPrice(){
         BigDecimal price = getPrice();
 
         if(hasALightDiscount()){
-            BigDecimal discount = price.multiply(new BigDecimal(LIGHT_DISCOUNT));
+            BigDecimal discount = price.multiply(LIGHT_DISCOUNT);
             price = price.subtract(discount); // 10%
         }
 
         if(hasALotOfCheaseDiscount()){
             BigDecimal priceOf = getPriceOf("Queijo");
             int number = getNumberOf("Queijo");
-            int free = number / NUMBER_OF_CHEEASE_DISCOUNT;
+            int free = number / NUMBER_OF_CHEESE_DISCOUNT;
 
-            BigDecimal discount = priceOf
-                    .multiply(new BigDecimal(free));
+            BigDecimal discount = priceOf.multiply(new BigDecimal(free));
             price = price.subtract(discount);
         }
 
@@ -83,8 +87,7 @@ public class Order {
             int number = getNumberOf("Carne");
             int free = number / NUMBER_OF_MEAT_DISCOUNT;
 
-            BigDecimal discount = priceOf
-                    .multiply(new BigDecimal(free));
+            BigDecimal discount = priceOf.multiply(new BigDecimal(free));
             price = price.subtract(discount);
         }
 
@@ -105,6 +108,12 @@ public class Order {
     public boolean hasALotOfCheaseDiscount() {
         return getNumberOf("Queijo") >= 3;
     }
+
+    /*
+        a forma de busca utilizada no getNumberOf e getPriceOf
+        foi apenas uma maneira
+        de facilitar, o correto seria utilizar o ID
+    */
 
     private BigDecimal getPriceOf(String type){
         BigDecimal price = BigDecimal.ZERO;

@@ -16,10 +16,10 @@ import rafael.com.br.lanchonete.model.Order;
 
 public class DataSource {
 
-    public static BigDecimal PRECO_ALFACE = new BigDecimal(3.0d);
-    public static BigDecimal PRECO_BACON = new BigDecimal(2.0d);
-    public static BigDecimal PRECO_QUEIJO = new BigDecimal(3.0d);
-    public static BigDecimal PRECO_CARNE = new BigDecimal(4.0d);
+    public static BigDecimal PRECO_ALFACE = new BigDecimal("3.0");
+    public static BigDecimal PRECO_BACON = new BigDecimal("2.0");
+    public static BigDecimal PRECO_QUEIJO = new BigDecimal("3.0");
+    public static BigDecimal PRECO_CARNE = new BigDecimal("4.0");
 
     public static Ingredient alface = new Ingredient(0, "Alface", PRECO_ALFACE, "");
     public static Ingredient bacon = new Ingredient(0, "Bacon", PRECO_BACON, "");

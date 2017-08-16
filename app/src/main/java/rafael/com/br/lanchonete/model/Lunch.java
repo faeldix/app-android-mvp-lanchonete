@@ -50,6 +50,17 @@ public class Lunch {
         return Collections.unmodifiableList(ingredients);
     }
 
+    public String getIngredientListDescription(){
+        StringBuilder builder = new StringBuilder();
+
+        for (Ingredient ingredient : ingredients){
+            builder.append(ingredient.getName());
+            builder.append(", ");
+        }
+
+        return builder.toString();
+    }
+
     public void addIngredient(Ingredient ingredient){
         ingredients.add(ingredient);
     }
@@ -90,4 +101,13 @@ public class Lunch {
         return id != null ? id.hashCode() : 0;
     }
 
+    @Override
+    public String toString() {
+        return "Lunch{" +
+                "id=" + id +
+                ", name='" + name + '\'' +
+                ", image='" + image + '\'' +
+                ", ingredients=" + ingredients +
+                '}';
+    }
 }

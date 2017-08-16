@@ -66,7 +66,7 @@ public class OrderTest {
     }
 
     @Test
-    public void verifyIfThereIsAMeatDiscountIfThereIsThreeMeatOrMore(){
+    public void verifyIfThereIsAMeatDiscountWhenThreeMeatOrMoreExist(){
         Order order = new Order(DataSource.comAlface);
 
         order.addIngredient(DataSource.carne);
@@ -84,7 +84,7 @@ public class OrderTest {
     }
 
     @Test
-    public void verifyIfThereIsACheaseDiscountIfThereIsThreeCheeseOrMore(){
+    public void verifyIfThereIsACheeseDiscountWhenThreeCheeseOrMoreExist(){
         Order order = new Order(DataSource.comAlface);
 
         order.addIngredient(DataSource.queijo);
@@ -105,7 +105,7 @@ public class OrderTest {
     public void applyADiscountOfTenPercentIfThereIsAlfaceAndNotBacon(){
         Order order = new Order(DataSource.comAlface);
 
-        BigDecimal discount = DataSource.comAlface.getPrice().multiply(new BigDecimal(0.1));
+        BigDecimal discount = DataSource.comAlface.getPrice().multiply(new BigDecimal("0.1"));
         BigDecimal expected = order.getPrice().subtract(discount);
 
         Assert.assertEquals(expected, order.getFinalPrice());
@@ -138,7 +138,7 @@ public class OrderTest {
     }
 
     @Test
-    public void applyTheThreeDiscountAtTheSameTime(){
+    public void applyAllDiscountsAtTheSameTimeIfNeeded(){
         Order order = new Order(DataSource.comAlface);
 
         order.addIngredient(DataSource.carne);
@@ -149,11 +149,12 @@ public class OrderTest {
         order.addIngredient(DataSource.queijo);
         order.addIngredient(DataSource.queijo);
 
-        BigDecimal light = DataSource.alface.getPrice().multiply(new BigDecimal(0.1)).add(DataSource.alface.getPrice());
-        BigDecimal lotOfMeat = DataSource.carne.getPrice().multiply(new BigDecimal(2));
-        BigDecimal lotOfCheese = DataSource.queijo.getPrice().multiply(new BigDecimal(2));
+        BigDecimal light = order.getPrice().multiply(new BigDecimal("0.1"));
+        BigDecimal lotOfMeat = DataSource.carne.getPrice().multiply(new BigDecimal(1));
+        BigDecimal lotOfCheese = DataSource.queijo.getPrice().multiply(new BigDecimal(1));
 
-        BigDecimal expected = light.add(lotOfCheese).add(lotOfMeat);
+        BigDecimal totalOfDiscount = light.add(lotOfCheese).add(lotOfMeat);
+        BigDecimal expected = order.getPrice().subtract(totalOfDiscount);
 
         Assert.assertEquals(expected, order.getFinalPrice());
     }
