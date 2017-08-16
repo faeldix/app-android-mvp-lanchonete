@@ -2,6 +2,7 @@ package rafael.com.br.lanchonete.api;
 
 import java.util.List;
 
+import io.reactivex.Observable;
 import rafael.com.br.lanchonete.api.request.AddOrderRequestVO;
 import rafael.com.br.lanchonete.api.response.IngredientResponseVO;
 import rafael.com.br.lanchonete.api.response.InfoLunchResponseVO;
@@ -21,7 +22,7 @@ import retrofit2.http.Path;
 public interface API {
 
     @GET("lanche")
-    Call<List<InfoLunchResponseVO>> getLunchs();
+    Observable<List<InfoLunchResponseVO>> getLunchs();
 
     @GET("ingrediente/de/{lanche}")
     Call<List<IngredientResponseVO>> getIngredientsOfLunch(@Path("lanche") Integer lanche);
@@ -39,6 +40,6 @@ public interface API {
     Call<List<OrderResponseVO>> getOrders();
 
     @GET("ingrediente")
-    Call<List<IngredientResponseVO>> getListOfIngredients();
+    Observable<List<IngredientResponseVO>> getListOfIngredients();
 
 }

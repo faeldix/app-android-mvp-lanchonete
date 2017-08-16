@@ -4,6 +4,7 @@ import android.content.Context;
 
 import com.google.gson.Gson;
 import com.jakewharton.picasso.OkHttp3Downloader;
+import com.jakewharton.retrofit2.adapter.rxjava2.RxJava2CallAdapterFactory;
 import com.squareup.picasso.Picasso;
 
 import java.io.File;
@@ -84,7 +85,9 @@ public class HTTPModule {
     public Retrofit provideRetrofit(OkHttpClient http, Gson gson) {
         return new Retrofit.Builder()
                 .baseUrl(BuildConfig.SERVER_URL).client(http)
-                .addConverterFactory(GsonConverterFactory.create(gson)).build();
+                .addConverterFactory(GsonConverterFactory.create(gson))
+                .addCallAdapterFactory(RxJava2CallAdapterFactory.create())
+                .build();
     }
 
     @Provides

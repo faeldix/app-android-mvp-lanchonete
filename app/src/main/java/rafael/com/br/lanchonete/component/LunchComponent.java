@@ -24,7 +24,7 @@ import rafael.com.br.lanchonete.view.LunchListViewImpl;
 @Component(modules = LunchModule.class, dependencies = { ApplicationComponent.class } )
 public interface LunchComponent {
 
-    public LunchListView provideLunchListView();
+    LunchListView provideLunchListView();
 
     void inject(MainActivity mainActivity);
 
