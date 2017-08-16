@@ -18,13 +18,14 @@ import okhttp3.Interceptor;
 import okhttp3.OkHttpClient;
 import okhttp3.Request;
 import okhttp3.Response;
+import rafael.com.br.lanchonete.api.API;
 import rafael.com.br.lanchonete.BuildConfig;
 import rafael.com.br.lanchonete.net.NetworkUtils;
 import retrofit2.Retrofit;
 import retrofit2.converter.gson.GsonConverterFactory;
 
 /**
- * Created by logonrm on 14/08/2017.
+ * Created by rafael-iteris on 14/08/2017.
  */
 
 @Module
@@ -71,9 +72,14 @@ public class HTTPModule {
     }
 
     @Provides @Singleton
+    public API provideAPI(Retrofit retrofit){
+        return retrofit.create(API.class);
+    }
+
+    @Provides @Singleton
     public Retrofit provideRetrofit(OkHttpClient http, Gson gson) {
         return new Retrofit.Builder()
-                .baseUrl("https://api.github.com/").client(http)
+                .baseUrl(BuildConfig.SERVER_URL).client(http)
                 .addConverterFactory(GsonConverterFactory.create(gson)).build();
     }
 
