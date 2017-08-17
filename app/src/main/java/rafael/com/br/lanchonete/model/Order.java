@@ -119,11 +119,13 @@ public class Order {
         BigDecimal price = BigDecimal.ZERO;
 
         for (Ingredient ingredient : lunch.getIngredients()){
-            if(ingredient.getName().contains(type)) price = ingredient.getPrice();
+            if(ingredient.getName()
+                    .toLowerCase().contains(type.toLowerCase())) price = ingredient.getPrice();
         }
 
         for (Ingredient ingredient : extras){
-            if(ingredient.getName().contains(type)) price = ingredient.getPrice();
+            if(ingredient.getName()
+                    .toLowerCase().contains(type.toLowerCase())) price = ingredient.getPrice();
         }
 
         return price;
@@ -133,11 +135,13 @@ public class Order {
         int number = 0;
 
         for (Ingredient ingredient : lunch.getIngredients()){
-            if(ingredient.getName().contains(type)) number++;
+            if(ingredient.getName().toLowerCase()
+                    .contains(type.toLowerCase())) number++;
         }
 
         for (Ingredient ingredient : extras){
-            if(ingredient.getName().contains(type)) number++;
+            if(ingredient.getName().toLowerCase()
+                    .contains(type.toLowerCase())) number++;
         }
 
         return number;

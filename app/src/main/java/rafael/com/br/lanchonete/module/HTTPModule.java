@@ -9,12 +9,15 @@ import com.squareup.picasso.Picasso;
 
 import java.io.File;
 import java.io.IOException;
+import java.util.concurrent.Executor;
+import java.util.concurrent.ExecutorService;
 
 import javax.inject.Singleton;
 
 import dagger.Module;
 import dagger.Provides;
 import okhttp3.Cache;
+import okhttp3.Dispatcher;
 import okhttp3.Interceptor;
 import okhttp3.OkHttpClient;
 import okhttp3.Request;
@@ -41,8 +44,18 @@ public class HTTPModule {
 
     @Provides
     @Singleton
-    public OkHttpClient provideOkHttp(final Cache cache, final Interceptor interceptor){
+    public Dispatcher provideDispatcher(){
+        Dispatcher dispatcher = new Dispatcher();
+        dispatcher.setMaxRequests(3);
+
+        return dispatcher;
+    }
+
+    @Provides
+    @Singleton
+    public OkHttpClient provideOkHttp(final Cache cache, final Interceptor interceptor, Dispatcher dispatcher){
         return new OkHttpClient().newBuilder()
+                .dispatcher(dispatcher)
                 .addNetworkInterceptor(interceptor)
                 .cache(cache)
                 .build();
@@ -95,8 +108,8 @@ public class HTTPModule {
     public Picasso providePicasso(Context context, OkHttpClient client){
         return new Picasso.Builder(context)
                 .downloader(new OkHttp3Downloader(client))
-                .indicatorsEnabled(BuildConfig.DEBUG)
-                .loggingEnabled(BuildConfig.DEBUG)
+//                .indicatorsEnabled(BuildConfig.DEBUG)
+//                .loggingEnabled(BuildConfig.DEBUG)
                 .build();
     }
 

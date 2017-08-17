@@ -6,6 +6,7 @@ import junit.framework.Assert;
 
 import org.junit.Before;
 import org.junit.Test;
+import org.mockito.Mock;
 import org.mockito.Mockito;
 import org.mockito.MockitoAnnotations;
 import org.mockito.Spy;
@@ -26,86 +27,104 @@ import static org.mockito.Mockito.*;
 
 public class OrderTest {
 
-    private List<Ingredient> ingredients;
-
     @Spy
     private Order order;
+
+    @Spy
+    private Lunch mockLunch;
+
+    @Spy
+    private Ingredient mockIngredient;
+
+    private BigDecimal price = BigDecimal.ONE;
 
     @Before
     public void init(){
         MockitoAnnotations.initMocks(this);
+
+        when(mockIngredient.getPrice()).thenReturn(price);
     }
 
     @Test
     public void priceOfOrderMustBeASumOfLunchIngredients(){
-        Order order = new Order(DataSource.comAlface);
+        when(mockLunch.getPrice()).thenReturn(price);
+        order.setLunch(mockLunch);
 
-        Assert.assertEquals(DataSource.alface.getPrice(), order.getPrice());
+        Assert.assertEquals(price, order.getPrice());
     }
 
     @Test
     public void priceOfOrderMustBeASumOfLunchIngredientsAndExtras(){
-        Order order = new Order(DataSource.comAlface);
+        order.setLunch(mockLunch);
+        order.addIngredient(mockIngredient);
 
-        order.addIngredient(DataSource.alface);
-
-        BigDecimal expected = DataSource.alface.getPrice().multiply(new BigDecimal(2));
+        BigDecimal lunchPrice = mockLunch.getPrice();
+        BigDecimal extraPrice = mockIngredient.getPrice();
+        BigDecimal expected = lunchPrice.add(extraPrice);
 
         Assert.assertEquals(expected, order.getPrice());
     }
 
     @Test
     public void verifyIfThereIsALightDiscountWhenThereIsAlfaceAndNotBacon(){
-        Order order = new Order(DataSource.comAlface);
+        /* teste so com alface */
+
+        when(mockIngredient.getName())
+                .thenReturn("alface");
+
+        mockLunch.addIngredient(mockIngredient);
+        order.setLunch(mockLunch);
 
         Assert.assertEquals(true, order.hasALightDiscount());
 
-        order.addIngredient(DataSource.bacon);
+        /* teste com alface e bacon */
+
+        Ingredient mockBacon = prepareMockForTypeOfIngredient("bacon");
+
+        order.addIngredient(mockBacon);
 
         Assert.assertEquals(false, order.hasALightDiscount());
     }
 
     @Test
     public void verifyIfThereIsAMeatDiscountWhenThreeMeatOrMoreExist(){
-        Order order = new Order(DataSource.comAlface);
+        order.setLunch(mockLunch);
 
-        order.addIngredient(DataSource.carne);
-        order.addIngredient(DataSource.carne);
+        when(mockIngredient.getName())
+                .thenReturn("carne");
+
+        order.addIngredient(mockIngredient);
+        order.addIngredient(mockIngredient);
 
         Assert.assertEquals(false, order.hasALotOfMeatDiscount());
 
-        order.addIngredient(DataSource.carne);
-
-        Assert.assertEquals(true, order.hasALotOfMeatDiscount());
-
-        order.addIngredient(DataSource.carne);
+        order.addIngredient(mockIngredient);
 
         Assert.assertEquals(true, order.hasALotOfMeatDiscount());
     }
 
     @Test
     public void verifyIfThereIsACheeseDiscountWhenThreeCheeseOrMoreExist(){
-        Order order = new Order(DataSource.comAlface);
+        order.setLunch(mockLunch);
 
-        order.addIngredient(DataSource.queijo);
-        order.addIngredient(DataSource.queijo);
+        Ingredient mockQueijo = prepareMockForTypeOfIngredient("queijo");
+
+        order.addIngredient(mockQueijo);
+        order.addIngredient(mockQueijo);
 
         Assert.assertEquals(false, order.hasALotOfCheaseDiscount());
 
-        order.addIngredient(DataSource.queijo);
-
-        Assert.assertEquals(true, order.hasALotOfCheaseDiscount());
-
-        order.addIngredient(DataSource.queijo);
+        order.addIngredient(mockQueijo);
 
         Assert.assertEquals(true, order.hasALotOfCheaseDiscount());
     }
 
     @Test
     public void applyADiscountOfTenPercentIfThereIsAlfaceAndNotBacon(){
-        Order order = new Order(DataSource.comAlface);
+        when(order.getPrice()).thenReturn(price);
+        when(order.hasALightDiscount()).thenReturn(true);
 
-        BigDecimal discount = DataSource.comAlface.getPrice().multiply(new BigDecimal("0.1"));
+        BigDecimal discount = price.multiply(new BigDecimal("0.1"));
         BigDecimal expected = order.getPrice().subtract(discount);
 
         Assert.assertEquals(expected, order.getFinalPrice());
@@ -113,50 +132,68 @@ public class OrderTest {
 
     @Test
     public void applyADiscountOfOneFreeMeatForEachThreeMeat(){
-        Order order = new Order(DataSource.comBacon);
+        order.setLunch(mockLunch);
 
-        order.addIngredient(DataSource.carne);
-        order.addIngredient(DataSource.carne);
-        order.addIngredient(DataSource.carne);
+        when(mockIngredient.getName())
+                .thenReturn("carne");
 
-        BigDecimal expected = DataSource.carne.getPrice().multiply(new BigDecimal(2)).add(DataSource.bacon.getPrice());
+        order.addIngredient(mockIngredient);
+        order.addIngredient(mockIngredient);
+        order.addIngredient(mockIngredient);
 
+        BigDecimal expected = mockIngredient.getPrice().multiply(new BigDecimal("2"));
         Assert.assertEquals(expected, order.getFinalPrice());
     }
 
     @Test
     public void applyADiscountOfOneFreeCheeseForEachThreeCheese(){
-        Order order = new Order(DataSource.comBacon);
+        order.setLunch(mockLunch);
 
-        order.addIngredient(DataSource.queijo);
-        order.addIngredient(DataSource.queijo);
-        order.addIngredient(DataSource.queijo);
+        when(mockIngredient.getName())
+                .thenReturn("queijo");
 
-        BigDecimal expected = DataSource.queijo.getPrice().multiply(new BigDecimal(2)).add(DataSource.bacon.getPrice());
+        order.addIngredient(mockIngredient);
+        order.addIngredient(mockIngredient);
+        order.addIngredient(mockIngredient);
 
+        BigDecimal expected = mockIngredient.getPrice().multiply(new BigDecimal("2"));
         Assert.assertEquals(expected, order.getFinalPrice());
     }
 
     @Test
     public void applyAllDiscountsAtTheSameTimeIfNeeded(){
-        Order order = new Order(DataSource.comAlface);
+        order.setLunch(mockLunch);
 
-        order.addIngredient(DataSource.carne);
-        order.addIngredient(DataSource.carne);
-        order.addIngredient(DataSource.carne);
+        Ingredient mockAlface = prepareMockForTypeOfIngredient("alface");
+        Ingredient mockCarne = prepareMockForTypeOfIngredient("carne");
+        Ingredient mockQueijo = prepareMockForTypeOfIngredient("queijo");
 
-        order.addIngredient(DataSource.queijo);
-        order.addIngredient(DataSource.queijo);
-        order.addIngredient(DataSource.queijo);
+        order.addIngredient(mockAlface);
+
+        order.addIngredient(mockCarne);
+        order.addIngredient(mockCarne);
+        order.addIngredient(mockCarne);
+
+        order.addIngredient(mockQueijo);
+        order.addIngredient(mockQueijo);
+        order.addIngredient(mockQueijo);
 
         BigDecimal light = order.getPrice().multiply(new BigDecimal("0.1"));
-        BigDecimal lotOfMeat = DataSource.carne.getPrice().multiply(new BigDecimal(1));
-        BigDecimal lotOfCheese = DataSource.queijo.getPrice().multiply(new BigDecimal(1));
+        BigDecimal lotOfMeat = mockCarne.getPrice();
+        BigDecimal lotOfCheese = mockQueijo.getPrice();
 
         BigDecimal totalOfDiscount = light.add(lotOfCheese).add(lotOfMeat);
         BigDecimal expected = order.getPrice().subtract(totalOfDiscount);
 
         Assert.assertEquals(expected, order.getFinalPrice());
+    }
+
+    private Ingredient prepareMockForTypeOfIngredient(String type){
+        Ingredient spy = mock(Ingredient.class);
+        when(spy.getName()).thenReturn(type).getMock();
+        when(spy.getPrice()).thenReturn(price);
+
+        return spy;
     }
 
 }
