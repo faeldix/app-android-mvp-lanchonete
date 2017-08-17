@@ -121,8 +121,10 @@ public class OrderTest {
 
     @Test
     public void applyADiscountOfTenPercentIfThereIsAlfaceAndNotBacon(){
-        when(order.getPrice()).thenReturn(price);
-        when(order.hasALightDiscount()).thenReturn(true);
+        when(mockIngredient.getName()).thenReturn("alface");
+
+        order.setLunch(mockLunch);
+        order.addIngredient(mockIngredient);
 
         BigDecimal discount = price.multiply(new BigDecimal("0.1"));
         BigDecimal expected = order.getPrice().subtract(discount);
