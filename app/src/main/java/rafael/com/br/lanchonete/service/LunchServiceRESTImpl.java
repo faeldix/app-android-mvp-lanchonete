@@ -28,34 +28,16 @@ public class LunchServiceRESTImpl implements LunchService {
 
     private API api;
 
+    public LunchServiceRESTImpl(){} /* for testing purposes */
+
     public LunchServiceRESTImpl(API api) {
         this.api = api;
     }
 
-    private Observable<List<InfoLunchResponseVO>> getRequestOfListOfLunchs(){
-        return api.getLunchs()
-                .subscribeOn(Schedulers.newThread())
-                .observeOn(AndroidSchedulers.mainThread());
-    }
-
-    private Observable<List<IngredientResponseVO>> getRequestOfListOfIngredients(){
-        return api.getListOfIngredients()
-                .subscribeOn(Schedulers.newThread())
-                .observeOn(AndroidSchedulers.mainThread());
-    }
-
     @Override
     public void getListOfLunchs(final OnRequestListOfLunchsFinished callback) {
-        callback.onStart();
 
-        Observable.zip(getRequestOfListOfLunchs(), getRequestOfListOfIngredients(), new BiFunction<List<InfoLunchResponseVO>, List<IngredientResponseVO>, LunchServiceResponse>() {
-
-            @Override
-            public LunchServiceResponse apply(@NonNull List<InfoLunchResponseVO> infoLunchResponseVOs, @NonNull List<IngredientResponseVO> ingredientResponseVOs) throws Exception {
-                return new LunchServiceResponse(infoLunchResponseVOs, ingredientResponseVOs);
-            }
-
-        }).onErrorResumeNext(new Function<Throwable, ObservableSource<? extends LunchServiceResponse>>() {
+        zip().onErrorResumeNext(new Function<Throwable, ObservableSource<? extends LunchServiceResponse>>() {
 
             @Override
             public ObservableSource<? extends LunchServiceResponse> apply(@NonNull Throwable throwable) throws Exception {
@@ -97,9 +79,42 @@ public class LunchServiceRESTImpl implements LunchService {
 
         });
 
+        callback.onStart();
     }
 
-    private class LunchServiceResponse {
+    public void setApi(API api) {
+        this.api = api;
+    }
+
+    public API getApi() {
+        return api;
+    }
+
+    private Observable<LunchServiceResponse> zip(){
+        return Observable.zip(getRequestOfListOfLunchs(), getRequestOfListOfIngredients(), new BiFunction<List<InfoLunchResponseVO>, List<IngredientResponseVO>, LunchServiceResponse>() {
+
+            @Override
+            public LunchServiceResponse apply(@NonNull List<InfoLunchResponseVO> infoLunchResponseVOs, @NonNull List<IngredientResponseVO> ingredientResponseVOs) throws Exception {
+                return new LunchServiceResponse(infoLunchResponseVOs, ingredientResponseVOs);
+            }
+
+        });
+    }
+
+    private Observable<List<InfoLunchResponseVO>> getRequestOfListOfLunchs(){
+        return api.getLunchs()
+                .subscribeOn(Schedulers.newThread())
+                .observeOn(AndroidSchedulers.mainThread());
+    }
+
+    private Observable<List<IngredientResponseVO>> getRequestOfListOfIngredients(){
+        return api.getListOfIngredients()
+                .subscribeOn(Schedulers.newThread())
+                .observeOn(AndroidSchedulers.mainThread());
+    }
+
+
+    public class LunchServiceResponse {
 
         private List<InfoLunchResponseVO> lunch;
         private List<IngredientResponseVO> ingredients;

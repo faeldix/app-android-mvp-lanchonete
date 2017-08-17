@@ -1,4 +1,4 @@
-package rafael.com.br.lanchonete;
+package rafael.com.br.lanchonete.model;
 
 import android.provider.ContactsContract;
 
