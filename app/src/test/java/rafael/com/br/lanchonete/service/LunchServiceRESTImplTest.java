@@ -141,7 +141,7 @@ public class LunchServiceRESTImplTest {
 
     public IngredientResponseVO create(Integer id){
         IngredientResponseVO ingredient = mock(IngredientResponseVO.class);
-        ingredient.id = 1;
+        ingredient.id = id;
         ingredient.price = 1d;
 
         return ingredient;
