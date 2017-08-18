@@ -13,6 +13,10 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.widget.Toast;
 
+import com.squareup.picasso.Picasso;
+
+import java.util.List;
+
 import javax.inject.Inject;
 
 import butterknife.BindView;
@@ -37,6 +41,7 @@ public class LunchListViewImpl extends DefaultFragment implements LunchListView 
     RecyclerView recycler;
 
     private LunchListPresenter presenter;
+    private Picasso picasso;
 
     @Override
     public void onCreate(@Nullable Bundle savedInstanceState) {
@@ -81,9 +86,9 @@ public class LunchListViewImpl extends DefaultFragment implements LunchListView 
     }
 
     @Override
-    public void showListOfLunch(LunchListAdapter adapter) {
+    public void showListOfLunch(List<Lunch> list) {
+        LunchListAdapter adapter = new LunchListAdapter(presenter, null, list);
         recycler.setAdapter(adapter);
-        recycler.getAdapter().notifyDataSetChanged();
     }
 
     @Override
@@ -134,7 +139,16 @@ public class LunchListViewImpl extends DefaultFragment implements LunchListView 
     }
 
     public void setPresenter(LunchListPresenter presenter) {
+        this.presenter.setView(this);
         this.presenter = presenter;
+    }
+
+    public Picasso getPicasso() {
+        return picasso;
+    }
+
+    public void setPicasso(Picasso picasso) {
+        this.picasso = picasso;
     }
 }
 

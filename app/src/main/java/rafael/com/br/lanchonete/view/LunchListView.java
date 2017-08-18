@@ -2,6 +2,8 @@ package rafael.com.br.lanchonete.view;
 
 import android.content.Context;
 
+import java.util.List;
+
 import rafael.com.br.lanchonete.adapter.LunchListAdapter;
 import rafael.com.br.lanchonete.model.Lunch;
 
@@ -15,7 +17,7 @@ public interface LunchListView {
     void onDismissLoading();
     void onShowErrorMessage(String message);
 
-    void showListOfLunch(LunchListAdapter adapter);
+    void showListOfLunch(List<Lunch> list);
     void showOptionsOfLunch(Lunch lunch);
 
     void goToCustomize(Lunch lunch);

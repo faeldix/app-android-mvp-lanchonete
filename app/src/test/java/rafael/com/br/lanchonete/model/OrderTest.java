@@ -6,10 +6,12 @@ import junit.framework.Assert;
 
 import org.junit.Before;
 import org.junit.Test;
+import org.junit.runner.RunWith;
 import org.mockito.Mock;
 import org.mockito.Mockito;
 import org.mockito.MockitoAnnotations;
 import org.mockito.Spy;
+import org.mockito.runners.MockitoJUnitRunner;
 
 import java.math.BigDecimal;
 import java.util.Arrays;
@@ -25,6 +27,7 @@ import static org.mockito.Mockito.*;
  * Created by rafael-iteris on 15/08/17.
  */
 
+@RunWith(MockitoJUnitRunner.class)
 public class OrderTest {
 
     @Spy

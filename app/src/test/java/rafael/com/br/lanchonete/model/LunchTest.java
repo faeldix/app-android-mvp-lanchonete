@@ -6,9 +6,11 @@ import org.junit.Before;
 import org.junit.BeforeClass;
 import org.junit.Rule;
 import org.junit.Test;
+import org.junit.runner.RunWith;
 import org.mockito.Mock;
 import org.mockito.Mockito;
 import org.mockito.MockitoAnnotations;
+import org.mockito.runners.MockitoJUnitRunner;
 
 import java.lang.reflect.Array;
 import java.math.BigDecimal;
@@ -38,6 +40,7 @@ import rafael.com.br.lanchonete.model.Lunch;
  * Created by rafael-iteris on 15/08/17.
  */
 
+@RunWith(MockitoJUnitRunner.class)
 public class LunchTest {
 
     @Mock

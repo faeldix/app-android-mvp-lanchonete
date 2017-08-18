@@ -39,10 +39,14 @@ public class LunchListAdapter extends RecyclerView.Adapter<LunchListAdapter.Item
 
     @Override
     public ItemViewHolder onCreateViewHolder(ViewGroup parent, int viewType) {
-        LayoutInflater inflater = LayoutInflater.from(context);
-        View inflated = inflater.inflate(R.layout.item_lunch_view, parent, false);
-
+        View inflated = getLayoutInflater().inflate(R.layout.item_lunch_view, parent, false);
         return new ItemViewHolder(inflated);
+    }
+
+
+
+    public LayoutInflater getLayoutInflater(){
+        return LayoutInflater.from(context);
     }
 
     @Override

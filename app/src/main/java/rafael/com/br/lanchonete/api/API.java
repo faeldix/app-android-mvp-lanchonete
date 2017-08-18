@@ -34,7 +34,7 @@ public interface API {
     Call<OrderResponseVO> createOrder(@Path("lanche") Integer lanche, @Body AddOrderRequestVO request);
 
     @GET("promocao")
-    Call<List<PromoResponseVO>> getPromos();
+    Observable<List<PromoResponseVO>> getPromos();
 
     @GET("pedido")
     Call<List<OrderResponseVO>> getOrders();

@@ -29,17 +29,17 @@ public class LunchModule {
     }
 
     @Provides @ActivityScope
-    public LunchListView provideLunchListView(LunchListPresenter presenter){
+    public LunchListView provideLunchListView(LunchListPresenter presenter, Picasso picasso){
         LunchListViewImpl view = new LunchListViewImpl();
         view.setPresenter(presenter);
-        presenter.setView(view);
+        view.setPicasso(picasso);
 
         return view;
     }
 
     @Provides @ActivityScope
-    public LunchListPresenter provideLunchListPresenter(LunchService service, Picasso picasso){
-        return new LunchListPresenterImpl(service, picasso);
+    public LunchListPresenter provideLunchListPresenter(LunchService service){
+        return new LunchListPresenterImpl(service);
     }
 
 }

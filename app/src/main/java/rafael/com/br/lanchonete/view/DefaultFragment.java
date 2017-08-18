@@ -23,7 +23,7 @@ public class DefaultFragment extends Fragment {
 
     public ApplicationComponent getAppComponent(){
         App app = (App) getActivity().getApplication();
-        return app.getApp();
+        return app.getAppComponent();
     }
 
     public void startProgress(){
