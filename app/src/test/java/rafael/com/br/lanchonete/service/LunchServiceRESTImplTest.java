@@ -135,15 +135,13 @@ public class LunchServiceRESTImplTest {
         mockImplementation.getListOfLunchs(callback);
         verify(callback).onSuccess(captor.capture());
 
-        Lunch unique = Observable.fromIterable(captor.getValue()).blockingFirst();
-
+        Lunch unique = captor.getValue().iterator().next();
         Assert.assertEquals(ingredients.size(), unique.getIngredients().size());
     }
 
     public IngredientResponseVO create(Integer id){
         IngredientResponseVO ingredient = mock(IngredientResponseVO.class);
         ingredient.id = 1;
-        ingredient.name = "queijo";
         ingredient.price = 1d;
 
         return ingredient;
