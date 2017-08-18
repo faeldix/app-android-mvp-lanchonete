@@ -20,6 +20,6 @@ public class InfoLunchResponseVO {
     @SerializedName("image")
     public String image;
     @SerializedName("ingredients")
-    public List<Integer> ingredients;
+    public List<Integer> ingredients = new ArrayList<>();
 
 }
