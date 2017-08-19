@@ -11,10 +11,8 @@ import rafael.com.br.lanchonete.model.Lunch;
  * Created by rafael-iteris on 15/08/17.
  */
 
-public interface LunchListView {
+public interface LunchListView extends BaseView {
 
-    void onShowLoading();
-    void onDismissLoading();
     void onShowErrorMessage(String message);
 
     void showListOfLunch(List<Lunch> list);
@@ -22,7 +20,5 @@ public interface LunchListView {
 
     void goToCustomize(Lunch lunch);
     void goToOrderFinish(Lunch lunch);
-
-    Context getContext();
 
 }

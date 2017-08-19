@@ -1,4 +1,4 @@
-package rafael.com.br.lanchonete;
+package rafael.com.br.lanchonete.view;
 
 import android.support.annotation.NonNull;
 import android.support.design.widget.BottomNavigationView;
@@ -12,14 +12,14 @@ import javax.inject.Inject;
 
 import butterknife.BindView;
 import butterknife.ButterKnife;
+import rafael.com.br.lanchonete.R;
 import rafael.com.br.lanchonete.component.DaggerLunchComponent;
+import rafael.com.br.lanchonete.view.BaseFragment;
 import rafael.com.br.lanchonete.view.LunchListView;
 import rafael.com.br.lanchonete.view.OrderListView;
 
 import static android.support.design.widget.BottomNavigationView.*;
 import static dagger.android.AndroidInjection.inject;
-
-//TODO passar essa classe para MVP
 
 public class MainActivity extends BaseActivity {
 
@@ -59,8 +59,6 @@ public class MainActivity extends BaseActivity {
 
             @Override
             public boolean onNavigationItemSelected(@NonNull MenuItem item) {
-                FragmentTransaction tx = getSupportFragmentManager().beginTransaction();
-
                 switch (item.getItemId()){
                     case R.id.bar_lunch_list:
                         show((Fragment) lunchs);
@@ -72,8 +70,6 @@ public class MainActivity extends BaseActivity {
                         show((Fragment) promos);
                         break;
                 }
-
-                tx.commit();
 
                 return true;
             }

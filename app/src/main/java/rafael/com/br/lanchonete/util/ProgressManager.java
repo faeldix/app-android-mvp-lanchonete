@@ -1,4 +1,4 @@
-package rafael.com.br.lanchonete.view;
+package rafael.com.br.lanchonete.util;
 
 import android.app.Activity;
 import android.app.ProgressDialog;

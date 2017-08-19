@@ -31,13 +31,13 @@ public interface API {
     Call<InfoLunchResponseVO> getInfoOfLunch(@Path("lanche") Integer lanche);
 
     @PUT("pedido/{lanche}")
-    Call<OrderResponseVO> createOrder(@Path("lanche") Integer lanche, @Body AddOrderRequestVO request);
+    Observable<OrderResponseVO> createOrder(@Path("lanche") Integer lanche, @Body AddOrderRequestVO request);
 
     @GET("promocao")
     Observable<List<PromoResponseVO>> getPromos();
 
     @GET("pedido")
-    Call<List<OrderResponseVO>> getOrders();
+    Observable<List<OrderResponseVO>> getOrders();
 
     @GET("ingrediente")
     Observable<List<IngredientResponseVO>> getListOfIngredients();

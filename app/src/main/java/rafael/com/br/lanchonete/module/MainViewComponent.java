@@ -1,8 +1,7 @@
 package rafael.com.br.lanchonete.module;
 
 import dagger.Component;
-import dagger.Module;
-import rafael.com.br.lanchonete.MainActivity;
+import rafael.com.br.lanchonete.view.MainActivity;
 import rafael.com.br.lanchonete.component.ApplicationComponent;
 import rafael.com.br.lanchonete.view.LunchListView;
 import rafael.com.br.lanchonete.view.OrderListView;

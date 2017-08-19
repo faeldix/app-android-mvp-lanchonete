@@ -13,7 +13,6 @@ import rafael.com.br.lanchonete.App;
 import rafael.com.br.lanchonete.api.API;
 import rafael.com.br.lanchonete.module.ApplicationModule;
 import rafael.com.br.lanchonete.module.HTTPModule;
-import rafael.com.br.lanchonete.view.DefaultFragment;
 
 /**
  * Created by rafaelfreitas on 8/16/17.

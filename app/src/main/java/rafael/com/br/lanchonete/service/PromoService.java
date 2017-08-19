@@ -12,7 +12,7 @@ public interface PromoService {
 
     void getListOfPromos(PromoServiceResponseCallback callback);
 
-    interface PromoServiceResponseCallback extends BaseRequetCallback {
+    interface PromoServiceResponseCallback extends BaseRequestCallback {
 
         public void onSucces(List<Promo> promos);
         public void onError(Throwable e);

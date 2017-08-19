@@ -32,6 +32,9 @@ public class LunchListPresenterImpl implements LunchListPresenter {
 
     @Override
     public void getListOfLunch() {
+        if(view == null)
+            throw new IllegalStateException("A view não foi setada para a classe: " + getClass().getName());
+
         service.getListOfLunchs(getOnRequestListOfLunchsFinishedCallback());
     }
 

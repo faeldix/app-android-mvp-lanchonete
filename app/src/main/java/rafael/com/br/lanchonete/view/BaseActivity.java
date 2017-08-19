@@ -1,11 +1,13 @@
-package rafael.com.br.lanchonete;
+package rafael.com.br.lanchonete.view;
 
 import android.os.Bundle;
 import android.support.annotation.Nullable;
 import android.support.v7.app.AppCompatActivity;
 
+import rafael.com.br.lanchonete.App;
+
 /**
- * Created by rafael-iteris on 18/08/17.
+ * Created by rafaelfreitas on 8/19/17.
  */
 
 public abstract class BaseActivity extends AppCompatActivity {
