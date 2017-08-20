@@ -12,6 +12,6 @@ import rafael.com.br.lanchonete.model.Promo;
 public interface PromoListView extends BaseView {
 
     void onShowErrorMessage(String message);
-    void showListOfLunch(List<Promo> list);
+    void showListOfPromos(List<Promo> list);
 
 }

@@ -34,7 +34,7 @@ public class PromoListPresenterImpl implements PromoListPresenter {
 
             @Override
             public void onSucces(List<Promo> promos) {
-                view.showListOfLunch(promos);
+                view.showListOfPromos(promos);
             }
 
             @Override

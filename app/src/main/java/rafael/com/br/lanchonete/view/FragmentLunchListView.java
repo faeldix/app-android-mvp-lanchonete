@@ -73,8 +73,12 @@ public class FragmentLunchListView extends BaseFragment implements LunchListView
 
     @Override
     public void showListOfLunch(List<Lunch> list) {
-        LunchListAdapter adapter = new LunchListAdapter(presenter, null, list);
-        recycler.setAdapter(adapter);
+
+        if(recycler.getAdapter() == null){
+            LunchListAdapter adapter = new LunchListAdapter(presenter, picasso, list);
+            recycler.setAdapter(adapter);
+        }
+
     }
 
     @Override
@@ -125,7 +129,6 @@ public class FragmentLunchListView extends BaseFragment implements LunchListView
     }
 
     public void setPresenter(LunchListPresenter presenter) {
-        this.presenter.setView(this);
         this.presenter = presenter;
     }
 

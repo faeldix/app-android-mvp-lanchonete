@@ -9,6 +9,7 @@ import javax.inject.Singleton;
 
 import dagger.Module;
 import dagger.Provides;
+import rafael.com.br.lanchonete.api.API;
 
 /**
  * Created by rafaelfreitas on 8/16/17.

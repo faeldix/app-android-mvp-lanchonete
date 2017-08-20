@@ -12,8 +12,11 @@ import java.util.List;
 import butterknife.BindView;
 import butterknife.ButterKnife;
 import rafael.com.br.lanchonete.R;
+import rafael.com.br.lanchonete.adapter.PromoListAdapter;
 import rafael.com.br.lanchonete.model.Lunch;
 import rafael.com.br.lanchonete.model.Order;
+import rafael.com.br.lanchonete.presenter.OrderListPresenter;
+import rafael.com.br.lanchonete.presenter.OrderPresenter;
 
 /**
  * Created by rafaelfreitas on 8/19/17.
@@ -23,6 +26,9 @@ public class FragmentOrderListView extends BaseFragment implements OrderListView
 
     @BindView(R.id.list)
     RecyclerView recycler;
+
+    private OrderListPresenter presenter;
+    private PromoListAdapter adapter;
 
     @Nullable
     @Override
@@ -40,12 +46,21 @@ public class FragmentOrderListView extends BaseFragment implements OrderListView
 
     @Override
     public void showListOfOrder(List<Order> list) {
-
+        if(adapter == null){
+        }
     }
 
     @Override
     public void showOptionsOfOrder(Order order) {
 
+    }
+
+    public OrderListPresenter getPresenter() {
+        return presenter;
+    }
+
+    public void setPresenter(OrderListPresenter presenter) {
+        this.presenter = presenter;
     }
 
 }

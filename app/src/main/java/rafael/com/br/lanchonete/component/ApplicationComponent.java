@@ -13,22 +13,29 @@ import rafael.com.br.lanchonete.App;
 import rafael.com.br.lanchonete.api.API;
 import rafael.com.br.lanchonete.module.ApplicationModule;
 import rafael.com.br.lanchonete.module.HTTPModule;
+import rafael.com.br.lanchonete.module.ServiceModule;
+import rafael.com.br.lanchonete.service.LunchService;
+import rafael.com.br.lanchonete.service.OrderService;
+import rafael.com.br.lanchonete.service.PromoService;
 
 /**
  * Created by rafaelfreitas on 8/16/17.
  */
 
 @Singleton
-@Component(modules = { ApplicationModule.class, HTTPModule.class })
+@Component(modules = { ApplicationModule.class, HTTPModule.class, ServiceModule.class })
 public interface ApplicationComponent {
 
-    public Context provideContext();
-    public Gson provideGson();
+    Context provideContext();
+    Gson provideGson();
+    Picasso providePicasso();
 
-    public API provideAPI();
-    public OkHttpClient provideHttpClient();
-    public Picasso providePicasso();
+    API provideAPI();
 
-    public void inject(App application);
+    LunchService provideServiceLunch();
+    OrderService provideOrderService();
+    PromoService providePromoService();
+
+    void inject(App application);
 
 }

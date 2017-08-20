@@ -31,8 +31,8 @@ public class FragmentPromoListView extends BaseFragment implements PromoListView
     @BindView(R.id.list)
     RecyclerView recycler;
 
+    private PromoListAdapter adapter;
     private PromoListPresenter presenter;
-    private Picasso picasso;
 
     @Nullable
     @Override
@@ -41,6 +41,13 @@ public class FragmentPromoListView extends BaseFragment implements PromoListView
         ButterKnife.bind(this, inflated);
 
         return inflated;
+    }
+
+    @Override
+    public void onActivityCreated(@Nullable Bundle savedInstanceState) {
+        super.onActivityCreated(savedInstanceState);
+
+        presenter.getListOfPromo();
     }
 
     @Override
@@ -63,11 +70,13 @@ public class FragmentPromoListView extends BaseFragment implements PromoListView
     }
 
     @Override
-    public void showListOfLunch(List<Promo> list) {
-        PromoListAdapter adapter = new PromoListAdapter(list, picasso, getContext());
+    public void showListOfPromos(List<Promo> list) {
+        if(adapter == null){
+            adapter = new PromoListAdapter(list);
 
-        recycler.setAdapter(adapter);
-        recycler.setLayoutManager(new LinearLayoutManager(getContext()));
+            recycler.setAdapter(adapter);
+            recycler.setLayoutManager(new LinearLayoutManager(getContext()));
+        }
     }
 
     public PromoListPresenter getPresenter() {
@@ -76,15 +85,6 @@ public class FragmentPromoListView extends BaseFragment implements PromoListView
 
     public void setPresenter(PromoListPresenter presenter) {
         this.presenter = presenter;
-        presenter.setView(this);
-    }
-
-    public Picasso getPicasso() {
-        return picasso;
-    }
-
-    public void setPicasso(Picasso picasso) {
-        this.picasso = picasso;
     }
 
 }

@@ -108,8 +108,7 @@ public class HTTPModule {
     public Picasso providePicasso(Context context, OkHttpClient client){
         return new Picasso.Builder(context)
                 .downloader(new OkHttp3Downloader(client))
-//                .indicatorsEnabled(BuildConfig.DEBUG)
-//                .loggingEnabled(BuildConfig.DEBUG)
+                .loggingEnabled(BuildConfig.DEBUG)
                 .build();
     }
 

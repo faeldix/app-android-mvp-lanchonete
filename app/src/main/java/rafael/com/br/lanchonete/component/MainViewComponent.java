@@ -1,9 +1,10 @@
-package rafael.com.br.lanchonete.module;
+package rafael.com.br.lanchonete.component;
 
 import dagger.Component;
+import rafael.com.br.lanchonete.module.MainModule;
 import rafael.com.br.lanchonete.view.MainActivity;
-import rafael.com.br.lanchonete.component.ApplicationComponent;
 import rafael.com.br.lanchonete.view.LunchListView;
+import rafael.com.br.lanchonete.view.MainPresenter;
 import rafael.com.br.lanchonete.view.OrderListView;
 import rafael.com.br.lanchonete.view.PromoListView;
 
@@ -11,9 +12,11 @@ import rafael.com.br.lanchonete.view.PromoListView;
  * Created by rafael-iteris on 18/08/17.
  */
 
-
-@Component(modules = {LunchModule.class, OrderModule.class, PromoModule.class }, dependencies = { ApplicationComponent.class })
+@ActivityScope
+@Component(modules = MainModule.class, dependencies = ApplicationComponent.class)
 public interface MainViewComponent {
+
+    MainPresenter provideMainPresenter();
 
     LunchListView provideLunchView();
     OrderListView provideOrderView();
