@@ -58,7 +58,8 @@ public class Lunch {
             builder.append(", ");
         }
 
-        return builder.toString();
+        int last = builder.lastIndexOf(",");
+        return builder.substring(0, last);
     }
 
     public void addIngredient(Ingredient ingredient){

@@ -6,8 +6,12 @@ import android.support.design.widget.BottomNavigationView;
 import android.support.v4.app.Fragment;
 import android.support.v4.app.FragmentTransaction;
 import android.os.Bundle;
+import android.support.v7.widget.Toolbar;
 import android.view.MenuItem;
 import android.widget.LinearLayout;
+
+import com.joanzapata.iconify.IconDrawable;
+import com.joanzapata.iconify.fonts.FontAwesomeIcons;
 
 import javax.inject.Inject;
 
@@ -28,7 +32,6 @@ public class MainActivity extends BaseActivity implements MainView {
 
     @BindView(R.id.bottom_navigation)
     BottomNavigationView navigation;
-
     @Inject
     LunchListView lunchs;
 
@@ -47,8 +50,10 @@ public class MainActivity extends BaseActivity implements MainView {
         setContentView(R.layout.activity_main);
         ButterKnife.bind(this);
 
-        presenter.showListOfLunchs();
+        configureColorOfIconsAtNavbar();
+
         navigation.setOnNavigationItemSelectedListener(getNavigationListener());
+        navigation.setSelectedItemId(R.id.bar_lunch_list);
     }
 
     public OnNavigationItemSelectedListener getNavigationListener(){
@@ -57,15 +62,20 @@ public class MainActivity extends BaseActivity implements MainView {
             @Override
             public boolean onNavigationItemSelected(@NonNull MenuItem item) {
 
+                configureColorOfIconsAtNavbar();
+
                 switch (item.getItemId()){
                     case R.id.bar_lunch_list:
                         onClickListOfLunchsOption();
+                        item.setIcon(getLunchIcon(android.R.color.white));
                         break;
                     case R.id.bar_order_list:
                         onClickListOfOrdersOption();
+                        item.setIcon(getOrderIcon(android.R.color.white));
                         break;
                     case R.id.bar_promo_list:
                         onClickListOfPromosOption();
+                        item.setIcon(getPromoIcon(android.R.color.white));
                         break;
                 }
 
@@ -117,6 +127,36 @@ public class MainActivity extends BaseActivity implements MainView {
                 .applicationComponent(getApp().getAppComponent())
                 .mainModule(new MainModule(this))
                 .build().inject(this);
+    }
+
+    public void configureColorOfIconsAtNavbar(){
+        navigation.getMenu()
+                .findItem(R.id.bar_lunch_list)
+                .setIcon(getLunchIcon(android.R.color.darker_gray));
+        navigation.getMenu()
+                .findItem(R.id.bar_order_list)
+                .setIcon(getOrderIcon(android.R.color.darker_gray));
+        navigation.getMenu()
+                .findItem(R.id.bar_promo_list)
+                .setIcon(getPromoIcon(android.R.color.darker_gray));
+    }
+
+    public IconDrawable getOrderIcon(int color){
+        return new IconDrawable(this, FontAwesomeIcons.fa_shopping_cart)
+                .actionBarSize()
+                .colorRes(color);
+    }
+
+    public IconDrawable getLunchIcon(int color){
+        return new IconDrawable(this, FontAwesomeIcons.fa_list)
+                .actionBarSize()
+                .colorRes(color);
+    }
+
+    public IconDrawable getPromoIcon(int color){
+        return new IconDrawable(this, FontAwesomeIcons.fa_smile_o)
+                .actionBarSize()
+                .colorRes(color);
     }
 
 }

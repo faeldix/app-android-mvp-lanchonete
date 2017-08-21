@@ -1,13 +1,10 @@
 package rafael.com.br.lanchonete.adapter;
 
-import android.content.Context;
 import android.support.v7.widget.RecyclerView;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.TextView;
-
-import com.squareup.picasso.Picasso;
 
 import java.util.List;
 
@@ -30,7 +27,7 @@ public class PromoListAdapter extends RecyclerView.Adapter<PromoListAdapter.Item
 
     @Override
     public ItemViewHolder onCreateViewHolder(ViewGroup parent, int viewType) {
-        View inflated = LayoutInflater.from(parent.getContext()).inflate(android.R.layout.simple_list_item_2, parent, false);
+        View inflated = LayoutInflater.from(parent.getContext()).inflate(R.layout.item_promo_view, parent, false);
         return new ItemViewHolder(inflated);
     }
 
@@ -49,10 +46,10 @@ public class PromoListAdapter extends RecyclerView.Adapter<PromoListAdapter.Item
 
     public static class ItemViewHolder extends RecyclerView.ViewHolder {
 
-        @BindView(android.R.id.text1)
+        @BindView(R.id.titulo)
         TextView title;
 
-        @BindView(android.R.id.text2)
+        @BindView(R.id.descricao)
         TextView description;
 
         public ItemViewHolder(View itemView) {

@@ -2,23 +2,21 @@
 <menu xmlns:android="http://schemas.android.com/apk/res/android" xmlns:app="http://schemas.android.com/apk/res-auto">
 
     <item
-        android:title="Lanches"
+        android:title="Promocões"
         app:showAsAction="ifRoom"
-        android:id="@+id/bar_lunch_list"
-        android:icon="@android:drawable/btn_plus">
+        android:id="@+id/bar_promo_list">
     </item>
 
     <item
-        android:title="Promocões"
+        android:title="Lanches"
         app:showAsAction="ifRoom"
-        android:id="@+id/bar_promo_list"
-        android:icon="@android:drawable/btn_plus">
+        android:id="@+id/bar_lunch_list">
     </item>
 
     <item
         android:title="Pedidos"
         app:showAsAction="ifRoom"
-        android:id="@+id/bar_order_list"
-        android:icon="@android:drawable/btn_plus"></item>
+        android:id="@+id/bar_order_list">
+    </item>
 
 </menu>
