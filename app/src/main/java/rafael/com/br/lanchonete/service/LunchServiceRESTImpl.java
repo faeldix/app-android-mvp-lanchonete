@@ -40,9 +40,9 @@ public class LunchServiceRESTImpl implements LunchService {
 
     @Override
     public void getListOfLunchs(final OnRequestListOfLunchsFinished callback) {
-        zip().onErrorResumeNext(error(callback)).subscribe(success(callback));
-
         callback.onStart();
+
+        zip().onErrorResumeNext(error(callback)).subscribe(success(callback));
     }
 
     private Consumer<LunchServiceResponse> success(final OnRequestListOfLunchsFinished callback){

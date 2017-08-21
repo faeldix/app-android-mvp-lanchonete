@@ -23,15 +23,17 @@ public class PromoServiceRESTImpl implements PromoService {
 
     private API api;
 
+    public PromoServiceRESTImpl() {}
+
     public PromoServiceRESTImpl(API api) {
         this.api = api;
     }
 
     @Override
     public void getListOfPromos(PromoServiceResponseCallback callback) {
-        request().onErrorResumeNext(error(callback)).subscribe(success(callback));
-
         callback.onStart();
+
+        request().onErrorResumeNext(error(callback)).subscribe(success(callback));
     }
 
     public Observable<List<PromoResponseVO>> request(){
@@ -71,6 +73,14 @@ public class PromoServiceRESTImpl implements PromoService {
             }
 
         };
+    }
+
+    public API getApi() {
+        return api;
+    }
+
+    public void setApi(API api) {
+        this.api = api;
     }
 
 }
