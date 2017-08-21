@@ -48,7 +48,7 @@ public class LunchListAdapter extends RecyclerView.Adapter<LunchListAdapter.Item
 
         holder.title.setText(lunch.getName());
         holder.price.setText("R$ " + lunch.getPrice().toString());
-        holder.ingredients.setText(lunch.getIngredientListDescription());
+        holder.ingredients.setText("Ingredientes: "+lunch.getIngredientListDescription());
 
         picasso.load(lunch.getImage())
                 .resize(75, 75)

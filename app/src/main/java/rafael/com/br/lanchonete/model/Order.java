@@ -50,6 +50,18 @@ public class Order {
         return Collections.unmodifiableList(extras);
     }
 
+    public String getDescriptionOfIngredientsExtras(){
+        StringBuilder builder = new StringBuilder();
+
+        for (Ingredient ingredient : extras){
+            builder.append(ingredient.getName());
+            builder.append(", ");
+        }
+
+        int last = builder.lastIndexOf(",");
+        return builder.substring(0, last);
+    }
+
     //TODO make a cache for this value
 
     public BigDecimal getPrice(){
