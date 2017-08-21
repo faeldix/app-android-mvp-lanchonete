@@ -30,7 +30,7 @@ android {
             targetSdkVersion 25
             testInstrumentationRunner 'android.support.test.runner.AndroidJUnitRunner'
             versionNameSuffix '-dev'
-            buildConfigField "String", "SERVER_URL", "\"http://192.168.33.100:8080/api/\""
+            buildConfigField "String", "SERVER_URL", "\"http://192.168.192.238:8080/api/\""
         }
         homolog {
             applicationId 'rafael.com.br.lanchonete.homolog'

@@ -25,15 +25,11 @@ public class LunchListPresenterImplTest {
     @Mock
     private LunchListView mockView;
 
-    @Mock
-    private LunchService mockService;
-
     @Spy
     private LunchListPresenterImpl presenter;
 
     @Before
     public void init(){
-        presenter.setService(mockService);
         presenter.setView(mockView);
     }
 

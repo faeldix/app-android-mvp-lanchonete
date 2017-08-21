@@ -2,6 +2,10 @@ package rafael.com.br.lanchonete.service;
 
 import org.json.JSONArray;
 
+import java.math.BigDecimal;
+import java.util.ArrayList;
+import java.util.Collections;
+import java.util.HashMap;
 import java.util.List;
 
 import io.reactivex.Observable;
@@ -12,63 +16,156 @@ import io.reactivex.disposables.Disposable;
 import io.reactivex.functions.BiConsumer;
 import io.reactivex.functions.Consumer;
 import io.reactivex.functions.Function;
+import io.reactivex.functions.Function3;
 import io.reactivex.schedulers.Schedulers;
 import rafael.com.br.lanchonete.api.API;
 import rafael.com.br.lanchonete.api.request.AddOrderRequestVO;
+import rafael.com.br.lanchonete.api.response.InfoLunchResponseVO;
+import rafael.com.br.lanchonete.api.response.IngredientResponseVO;
 import rafael.com.br.lanchonete.api.response.OrderResponseVO;
 import rafael.com.br.lanchonete.model.Ingredient;
+import rafael.com.br.lanchonete.model.Lunch;
 import rafael.com.br.lanchonete.model.Order;
+
+import static io.reactivex.Observable.empty;
+import static io.reactivex.Observable.fromIterable;
 
 /**
  * Created by rafaelfreitas on 8/19/17.
  */
 
+// {id, idlunch, extrasIngredients, date}
+
 public class OrderServiceRESTImpl implements OrderService {
 
     private API api;
+    private LunchService lunchService;
 
-    public OrderServiceRESTImpl(API api) {
+    public OrderServiceRESTImpl(API api, LunchService lunchService) {
         this.api = api;
+        this.lunchService = lunchService;
     }
 
     /* get list of orders structure */
 
     @Override
-    public void getOrders(GetOrdersCallback callback) {
-        getListOrdersRequest()
-                .onErrorResumeNext(getListOrdersError(callback))
-                .doOnSubscribe(getListOrdersSuccess(callback));
+    public void getOrders(BaseRequestCallback<List<Order>, RuntimeException> callback) {
+        zip().onErrorResumeNext(getListOrdersError(callback)).subscribe(getListOrdersSuccess(callback));
 
         callback.onStart();
     }
 
+    private Consumer<OrdersZippedResponse> getListOrdersSuccess(final BaseRequestCallback<List<Order>, RuntimeException> callback){
+        return new Consumer<OrdersZippedResponse>() {
+            @Override
+            public void accept(OrdersZippedResponse response) throws Exception {
+
+                /* mapeando ingredients */
+
+                final HashMap<Integer, Ingredient> hashIngredients = fromIterable(response.getIngredientResponseVOs()).collectInto(new HashMap<Integer, Ingredient>(), new BiConsumer<HashMap<Integer, Ingredient>, IngredientResponseVO>() {
+
+                    @Override
+                    public void accept(HashMap<Integer, Ingredient> map, IngredientResponseVO vo) throws Exception {
+                        map.put(vo.id, new Ingredient(vo.id, vo.name, new BigDecimal(vo.price.toString()), vo.image));
+                    }
+
+                }).blockingGet();
+
+                /* mapeando lanches */
+
+                final HashMap<Integer, Lunch> hashLunch = fromIterable(response.getInfoLunchResponseVOs()).collectInto(new HashMap<Integer, Lunch>(), new BiConsumer<HashMap<Integer, Lunch>, InfoLunchResponseVO>() {
+
+                    @Override
+                    public void accept(HashMap<Integer, Lunch> map, InfoLunchResponseVO vo) throws Exception {
+                        final Lunch lunch = new Lunch(vo.id, vo.name, vo.image, Collections.<Ingredient>emptyList());
+
+                        fromIterable(vo.ingredients).blockingForEach(new Consumer<Integer>() {
+
+                            @Override
+                            public void accept(Integer id) throws Exception {
+                                Ingredient ingredient = hashIngredients.get(id);
+                                lunch.addIngredient(ingredient);
+                            }
+
+                        });
+
+                        map.put(vo.id, lunch);
+                    }
+
+                }).blockingGet();
+
+                /* mapeando ordens */
+
+                List<Order> result = fromIterable(response.getOrderResponseVOs()).collectInto(new ArrayList<Order>(), new BiConsumer<ArrayList<Order>, OrderResponseVO>() {
+
+                    @Override
+                    public void accept(ArrayList<Order> orders, OrderResponseVO orderResponseVO) throws Exception {
+                        Lunch lunch = hashLunch.get(orderResponseVO.lunchId);
+
+                        Order order = new Order();
+                        order.setLunch(lunch);
+
+                        for (int i = 0; i < orderResponseVO.extras.length(); i++) {
+                            int id = orderResponseVO.extras.getInt(i);
+                            order.addIngredient(hashIngredients.get(id));
+                        }
+
+                        orders.add(order);
+                    }
+
+                }).blockingGet();
+
+                callback.onSuccess(result);
+                callback.onEnd();
+            }
+        };
+    }
+
+    private Observable<OrdersZippedResponse> zip(){
+        return Observable.zip(getListOrdersRequest(), getListOfIngredientsRequest(), getListOfLunchsRequest(), new Function3<List<OrderResponseVO>, List<IngredientResponseVO>, List<InfoLunchResponseVO>, OrdersZippedResponse>() {
+
+            @Override
+            public OrdersZippedResponse apply(@NonNull List<OrderResponseVO> orderResponseVOs, @NonNull List<IngredientResponseVO> ingredientResponseVOs, @NonNull List<InfoLunchResponseVO> infoLunchResponseVOs) throws Exception {
+                return new OrdersZippedResponse(orderResponseVOs, ingredientResponseVOs, infoLunchResponseVOs);
+            }
+
+        });
+    }
+
+    private Function<Throwable, ObservableSource<? extends OrdersZippedResponse>> getListOrdersError(final BaseRequestCallback<List<Order>, RuntimeException> callback){
+        return new Function<Throwable, ObservableSource<? extends OrdersZippedResponse>>() {
+            @Override
+            public ObservableSource<? extends OrdersZippedResponse> apply(@NonNull Throwable throwable) throws Exception {
+                callback.onErro(new RuntimeException("Não foi possivel buscar a informação solicitada.", throwable));
+                callback.onEnd();
+
+                return empty();
+            }
+        };
+    }
+
     private Observable<List<OrderResponseVO>> getListOrdersRequest(){
-        return api.getOrders().subscribeOn(Schedulers.newThread())
+        return api.getOrders()
+                .subscribeOn(Schedulers.newThread())
                 .observeOn(AndroidSchedulers.mainThread());
     }
 
-    private Function<Throwable, ObservableSource<? extends List<OrderResponseVO>>> getListOrdersError(GetOrdersCallback callback){
-        return new Function<Throwable, ObservableSource<? extends List<OrderResponseVO>>>() {
-            @Override
-            public ObservableSource<? extends List<OrderResponseVO>> apply(@NonNull Throwable throwable) throws Exception {
-                return null;
-            }
-        };
+    private Observable<List<InfoLunchResponseVO>> getListOfLunchsRequest(){
+        return api.getLunchs()
+                .subscribeOn(Schedulers.newThread())
+                .observeOn(AndroidSchedulers.mainThread());
     }
 
-    private Consumer<Disposable> getListOrdersSuccess(GetOrdersCallback callback){
-        return new Consumer<Disposable>() {
-            @Override
-            public void accept(Disposable disposable) throws Exception {
-
-            }
-        };
+    private Observable<List<IngredientResponseVO>> getListOfIngredientsRequest(){
+        return api.getListOfIngredients()
+                .subscribeOn(Schedulers.newThread())
+                .observeOn(AndroidSchedulers.mainThread());
     }
 
     /* create order */
 
     @Override
-    public void createOrder(Order order, CreateOrderCallback callback) {
+    public void createOrder(Order order, BaseRequestCallback<Void, RuntimeException> callback) {
         getCreateOrderRequest(order)
                 .onErrorResumeNext(getCreateOrderError(callback))
                 .subscribe(getCreateOrderSuccess(callback));
@@ -90,52 +187,56 @@ public class OrderServiceRESTImpl implements OrderService {
                 .observeOn(AndroidSchedulers.mainThread());
     }
 
-    public Consumer<OrderResponseVO> getCreateOrderSuccess(CreateOrderCallback callback){
+    public Consumer<OrderResponseVO> getCreateOrderSuccess(final BaseRequestCallback<Void, RuntimeException> callback){
         return new Consumer<OrderResponseVO>() {
 
             @Override
             public void accept(OrderResponseVO orderResponseVO) throws Exception {
-
+                callback.onSuccess(null);
+                callback.onEnd();
             }
 
         };
     }
 
-    public Function<Throwable, ObservableSource<? extends OrderResponseVO>> getCreateOrderError(CreateOrderCallback callback){
+    public Function<Throwable, ObservableSource<? extends OrderResponseVO>> getCreateOrderError(final BaseRequestCallback<Void, RuntimeException> callback){
         return new Function<Throwable, ObservableSource<? extends OrderResponseVO>>() {
 
             @Override
             public ObservableSource<? extends OrderResponseVO> apply(@NonNull Throwable throwable) throws Exception {
-                return null;
+                callback.onErro(new RuntimeException("Não foi foi possivel salvar o pedido.", throwable));
+                callback.onEnd();
+
+                return empty();
             }
 
         };
     }
 
-    public CreateOrderCallback getCreateOrderCallback(GetOrdersCallback callback){
-         return new CreateOrderCallback() {
+    public static class OrdersZippedResponse {
 
-             @Override
-             public void onSuccess(OrderResponseVO created) {
+        private List<OrderResponseVO> orderResponseVOs;
+        private List<IngredientResponseVO> ingredientResponseVOs;
+        private List<InfoLunchResponseVO> infoLunchResponseVOs;
 
-             }
+        public OrdersZippedResponse(List<OrderResponseVO> orderResponseVOs, List<IngredientResponseVO> ingredientResponseVOs, List<InfoLunchResponseVO> infoLunchResponseVOs) {
+            this.orderResponseVOs = orderResponseVOs;
+            this.ingredientResponseVOs = ingredientResponseVOs;
+            this.infoLunchResponseVOs = infoLunchResponseVOs;
+        }
 
-             @Override
-             public void onError(Throwable err) {
+        public List<OrderResponseVO> getOrderResponseVOs() {
+            return orderResponseVOs;
+        }
 
-             }
+        public List<IngredientResponseVO> getIngredientResponseVOs() {
+            return ingredientResponseVOs;
+        }
 
-             @Override
-             public void onStart() {
+        public List<InfoLunchResponseVO> getInfoLunchResponseVOs() {
+            return infoLunchResponseVOs;
+        }
 
-             }
-
-             @Override
-             public void onEnd() {
-
-             }
-
-         };
     }
 
 }

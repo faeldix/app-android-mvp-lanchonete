@@ -13,21 +13,16 @@ import org.mockito.MockitoAnnotations;
 import org.mockito.Spy;
 import org.mockito.runners.MockitoJUnitRunner;
 
-import java.lang.reflect.Array;
-import java.util.ArrayList;
 import java.util.Arrays;
-import java.util.Collections;
 import java.util.List;
 
 import io.reactivex.Observable;
 import rafael.com.br.lanchonete.RxJavaJUnitRule;
 import rafael.com.br.lanchonete.api.API;
 import rafael.com.br.lanchonete.api.response.PromoResponseVO;
-import rafael.com.br.lanchonete.model.Lunch;
 import rafael.com.br.lanchonete.model.Promo;
 
 import static org.mockito.Matchers.any;
-import static org.mockito.Matchers.anyList;
 import static org.mockito.Mockito.mock;
 import static org.mockito.Mockito.spy;
 import static org.mockito.Mockito.verify;
@@ -74,7 +69,7 @@ public class PromoServiceRESTImplTest {
         mockService.getListOfPromos(mockCallback);
 
         verify(mockCallback).onStart();
-        verify(mockCallback).onSucces(captor.capture());
+        verify(mockCallback).onSuccess(captor.capture());
         verify(mockCallback).onEnd();
 
         Assert.assertEquals(result.size(), captor.getValue().size());

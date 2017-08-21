@@ -1,10 +1,7 @@
 package rafael.com.br.lanchonete.view;
 
-import android.content.Context;
-
 import java.util.List;
 
-import rafael.com.br.lanchonete.adapter.LunchListAdapter;
 import rafael.com.br.lanchonete.model.Lunch;
 
 /**

@@ -25,10 +25,10 @@ public interface API {
     Observable<List<InfoLunchResponseVO>> getLunchs();
 
     @GET("ingrediente/de/{lanche}")
-    Call<List<IngredientResponseVO>> getIngredientsOfLunch(@Path("lanche") Integer lanche);
+    Observable<List<IngredientResponseVO>> getIngredientsOfLunch(@Path("lanche") Integer lanche);
 
     @GET("lanche/{lanche}")
-    Call<InfoLunchResponseVO> getInfoOfLunch(@Path("lanche") Integer lanche);
+    Observable<InfoLunchResponseVO> getInfoOfLunch(@Path("lanche") Integer lanche);
 
     @PUT("pedido/{lanche}")
     Observable<OrderResponseVO> createOrder(@Path("lanche") Integer lanche, @Body AddOrderRequestVO request);

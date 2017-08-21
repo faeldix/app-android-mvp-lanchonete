@@ -11,7 +11,6 @@ import io.reactivex.functions.Consumer;
 import io.reactivex.functions.Function;
 import io.reactivex.schedulers.Schedulers;
 import rafael.com.br.lanchonete.api.API;
-import rafael.com.br.lanchonete.api.response.InfoLunchResponseVO;
 import rafael.com.br.lanchonete.api.response.PromoResponseVO;
 import rafael.com.br.lanchonete.model.Promo;
 
@@ -68,7 +67,7 @@ public class PromoServiceRESTImpl implements PromoService {
                     promos.add(promo);
                 }
 
-                callback.onSucces(promos);
+                callback.onSuccess(promos);
                 callback.onEnd();
             }
 

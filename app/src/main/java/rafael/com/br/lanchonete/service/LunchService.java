@@ -10,17 +10,7 @@ import rafael.com.br.lanchonete.model.Lunch;
 
 public interface LunchService {
 
-    void getListOfLunchs(final OnRequestListOfLunchsFinished callback);
-
-    public interface OnRequestListOfLunchsFinished {
-
-        void onStart();
-        void onEnd();
-
-        void onSuccess(List<Lunch> lunchs);
-        void onError(Exception e);
-
-    }
-
+    void getListOfLunchs(final BaseRequestCallback<List<Lunch>, RuntimeException> callback);
+    void getInfoOfLunch(Integer id, final BaseRequestCallback<Lunch, RuntimeException> callback);
 
 }

@@ -1,11 +1,9 @@
 package rafael.com.br.lanchonete.service;
 
 import java.math.BigDecimal;
-import java.util.ArrayList;
 import java.util.Collections;
 import java.util.HashMap;
 import java.util.List;
-import java.util.Map;
 
 import io.reactivex.Observable;
 import io.reactivex.ObservableSource;
@@ -39,17 +37,40 @@ public class LunchServiceRESTImpl implements LunchService {
     }
 
     @Override
-    public void getListOfLunchs(final OnRequestListOfLunchsFinished callback) {
+    public void getListOfLunchs(final BaseRequestCallback<List<Lunch>, RuntimeException> callback) {
         callback.onStart();
 
-        zip().onErrorResumeNext(error(callback)).subscribe(success(callback));
+        zipListOfLunchs().onErrorResumeNext(errorListOfLunchs(callback)).subscribe(successListOfLunchs(callback));
     }
 
-    private Consumer<LunchServiceResponse> success(final OnRequestListOfLunchsFinished callback){
-        return new Consumer<LunchServiceResponse>() {
+    private Observable<LunchListServiceResponse> zipListOfLunchs(){
+        return Observable.zip(getRequestOfListOfLunchs(), getRequestOfListOfIngredients(), new BiFunction<List<InfoLunchResponseVO>, List<IngredientResponseVO>, LunchListServiceResponse>() {
 
             @Override
-            public void accept(LunchServiceResponse response) throws Exception {
+            public LunchListServiceResponse apply(@NonNull List<InfoLunchResponseVO> infoLunchResponseVOs, @NonNull List<IngredientResponseVO> ingredientResponseVOs) throws Exception {
+                return new LunchListServiceResponse(infoLunchResponseVOs, ingredientResponseVOs);
+            }
+
+        });
+    }
+
+    private Observable<List<InfoLunchResponseVO>> getRequestOfListOfLunchs(){
+        return api.getLunchs()
+                .subscribeOn(Schedulers.newThread())
+                .observeOn(AndroidSchedulers.mainThread());
+    }
+
+    private Observable<List<IngredientResponseVO>> getRequestOfListOfIngredients(){
+        return api.getListOfIngredients()
+                .subscribeOn(Schedulers.newThread())
+                .observeOn(AndroidSchedulers.mainThread());
+    }
+
+    private Consumer<LunchListServiceResponse> successListOfLunchs(final BaseRequestCallback callback){
+        return new Consumer<LunchListServiceResponse>() {
+
+            @Override
+            public void accept(LunchListServiceResponse response) throws Exception {
 
                 final HashMap<Integer, Ingredient> hash = fromIterable(response.getIngredients()).collectInto(new HashMap<Integer, Ingredient>(), new BiConsumer<HashMap<Integer, Ingredient>, IngredientResponseVO>() {
 
@@ -88,12 +109,12 @@ public class LunchServiceRESTImpl implements LunchService {
         };
     }
 
-    private Function<Throwable, ObservableSource<? extends LunchServiceResponse>> error(final OnRequestListOfLunchsFinished callback){
-        return new Function<Throwable, ObservableSource<? extends LunchServiceResponse>>() {
+    private Function<Throwable, ObservableSource<? extends LunchListServiceResponse>> errorListOfLunchs(final BaseRequestCallback<List<Lunch>, RuntimeException> callback){
+        return new Function<Throwable, ObservableSource<? extends LunchListServiceResponse>>() {
 
             @Override
-            public ObservableSource<? extends LunchServiceResponse> apply(@NonNull Throwable throwable) throws Exception {
-                callback.onError(new RuntimeException(throwable));
+            public ObservableSource<? extends LunchListServiceResponse> apply(@NonNull Throwable throwable) throws Exception {
+                callback.onErro(new RuntimeException("Não foi possivel buscar a informação solicitada.", throwable));
                 callback.onEnd();
 
                 return empty();
@@ -102,25 +123,83 @@ public class LunchServiceRESTImpl implements LunchService {
         };
     }
 
-    private Observable<LunchServiceResponse> zip(){
-        return Observable.zip(getRequestOfListOfLunchs(), getRequestOfListOfIngredients(), new BiFunction<List<InfoLunchResponseVO>, List<IngredientResponseVO>, LunchServiceResponse>() {
+    public class LunchListServiceResponse {
+
+        private List<InfoLunchResponseVO> lunch;
+        private List<IngredientResponseVO> ingredients;
+
+        public LunchListServiceResponse(List<InfoLunchResponseVO> lunch, List<IngredientResponseVO> ingredients) {
+            this.lunch = lunch;
+            this.ingredients = ingredients;
+        }
+
+        public List<InfoLunchResponseVO> getLunch() {
+            return lunch;
+        }
+
+        public List<IngredientResponseVO> getIngredients() {
+            return ingredients;
+        }
+
+    }
+
+    /* get info of lunch */
+
+    @Override
+    public void getInfoOfLunch(Integer id, final BaseRequestCallback<Lunch, RuntimeException> callback) {
+        zipInfoLunch(id).onErrorResumeNext(new Function<Throwable, ObservableSource<? extends InfoOfLunchResponse>>() {
 
             @Override
-            public LunchServiceResponse apply(@NonNull List<InfoLunchResponseVO> infoLunchResponseVOs, @NonNull List<IngredientResponseVO> ingredientResponseVOs) throws Exception {
-                return new LunchServiceResponse(infoLunchResponseVOs, ingredientResponseVOs);
+            public ObservableSource<? extends InfoOfLunchResponse> apply(@NonNull Throwable throwable) throws Exception {
+                callback.onErro(new RuntimeException("Não foi possivel buscar a informação solicitada.", throwable));
+                callback.onEnd();
+
+                return empty();
+            }
+
+        }).subscribe(new Consumer<InfoOfLunchResponse>() {
+
+            @Override
+            public void accept(InfoOfLunchResponse response) throws Exception {
+
+                final HashMap<Integer, Ingredient> hash = fromIterable(response.getIngredients()).collectInto(new HashMap<Integer, Ingredient>(), new BiConsumer<HashMap<Integer, Ingredient>, IngredientResponseVO>() {
+
+                    @Override
+                    public void accept(HashMap<Integer, Ingredient> map, IngredientResponseVO vo) throws Exception {
+                        map.put(vo.id, new Ingredient(vo.id, vo.name, new BigDecimal(vo.price.toString()), vo.image));
+                    }
+
+                }).blockingGet();
+
+                InfoLunchResponseVO vo = response.getLunch();
+
+                Lunch lunch = new Lunch(vo.id, vo.name, vo.image, Collections.<Ingredient>emptyList());
+
+                for(Integer id : vo.ingredients){
+                    Ingredient ingredient = hash.get(id);
+                    lunch.addIngredient(ingredient);
+                }
+
+                callback.onSuccess(lunch);
+                callback.onEnd();
             }
 
         });
     }
 
-    private Observable<List<InfoLunchResponseVO>> getRequestOfListOfLunchs(){
-        return api.getLunchs()
-                .subscribeOn(Schedulers.newThread())
-                .observeOn(AndroidSchedulers.mainThread());
+    public Observable<InfoOfLunchResponse> zipInfoLunch(Integer id){
+        return zip(getInfoOfLunchRequest(id), getRequestOfListOfIngredients(), new BiFunction<InfoLunchResponseVO, List<IngredientResponseVO>, InfoOfLunchResponse>() {
+
+            @Override
+            public InfoOfLunchResponse apply(@NonNull InfoLunchResponseVO infoLunchResponseVO, @NonNull List<IngredientResponseVO> ingredientResponseVOs) throws Exception {
+                return new InfoOfLunchResponse(infoLunchResponseVO, ingredientResponseVOs);
+            }
+
+        });
     }
 
-    private Observable<List<IngredientResponseVO>> getRequestOfListOfIngredients(){
-        return api.getListOfIngredients()
+    public Observable<InfoLunchResponseVO> getInfoOfLunchRequest(Integer lunchId){
+        return api.getInfoOfLunch(lunchId)
                 .subscribeOn(Schedulers.newThread())
                 .observeOn(AndroidSchedulers.mainThread());
     }
@@ -133,17 +212,17 @@ public class LunchServiceRESTImpl implements LunchService {
         return api;
     }
 
-    public class LunchServiceResponse {
+    public static class InfoOfLunchResponse {
 
-        private List<InfoLunchResponseVO> lunch;
+        private InfoLunchResponseVO lunch;
         private List<IngredientResponseVO> ingredients;
 
-        public LunchServiceResponse(List<InfoLunchResponseVO> lunch, List<IngredientResponseVO> ingredients) {
+        public InfoOfLunchResponse(InfoLunchResponseVO lunch, List<IngredientResponseVO> ingredients) {
             this.lunch = lunch;
             this.ingredients = ingredients;
         }
 
-        public List<InfoLunchResponseVO> getLunch() {
+        public InfoLunchResponseVO getLunch() {
             return lunch;
         }
 

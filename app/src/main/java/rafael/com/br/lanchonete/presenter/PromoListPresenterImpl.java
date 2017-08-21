@@ -33,7 +33,7 @@ public class PromoListPresenterImpl implements PromoListPresenter {
         return new PromoService.PromoServiceResponseCallback() {
 
             @Override
-            public void onSucces(List<Promo> promos) {
+            public void onSuccess(List<Promo> promos) {
                 view.showListOfPromos(promos);
             }
 

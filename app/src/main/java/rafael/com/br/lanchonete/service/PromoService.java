@@ -14,7 +14,7 @@ public interface PromoService {
 
     interface PromoServiceResponseCallback extends BaseRequestCallback {
 
-        public void onSucces(List<Promo> promos);
+        public void onSuccess(List<Promo> promos);
         public void onError(Throwable e);
 
     }
