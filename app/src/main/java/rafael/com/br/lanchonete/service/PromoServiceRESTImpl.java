@@ -29,7 +29,7 @@ public class PromoServiceRESTImpl implements PromoService {
     }
 
     @Override
-    public void getListOfPromos(PromoServiceResponseCallback callback) {
+    public void getListOfPromos(BaseRequestCallback<List<Promo>, RuntimeException> callback) {
         callback.onStart();
 
         request().onErrorResumeNext(error(callback)).subscribe(success(callback));
@@ -41,12 +41,12 @@ public class PromoServiceRESTImpl implements PromoService {
                 .observeOn(AndroidSchedulers.mainThread());
     }
 
-    public Function<Throwable, ObservableSource<? extends List<PromoResponseVO>>> error(final PromoServiceResponseCallback callback){
+    public Function<Throwable, ObservableSource<? extends List<PromoResponseVO>>> error(final BaseRequestCallback<List<Promo>, RuntimeException> callback){
         return new Function<Throwable, ObservableSource<? extends List<PromoResponseVO>>>() {
 
             @Override
             public ObservableSource<? extends List<PromoResponseVO>> apply(@NonNull Throwable throwable) throws Exception {
-                callback.onError(new RuntimeException("Ocorreu um erro ao buscar pelas promoções."));
+                callback.onErro(new RuntimeException("Ocorreu um erro ao buscar pelas promoções."));
                 callback.onEnd();
 
                 return Observable.empty();
@@ -55,7 +55,7 @@ public class PromoServiceRESTImpl implements PromoService {
         };
     }
 
-    public Consumer<List<PromoResponseVO>> success(final PromoServiceResponseCallback callback){
+    public Consumer<List<PromoResponseVO>> success(final BaseRequestCallback<List<Promo>, RuntimeException> callback){
         return new Consumer<List<PromoResponseVO>>() {
 
             @Override

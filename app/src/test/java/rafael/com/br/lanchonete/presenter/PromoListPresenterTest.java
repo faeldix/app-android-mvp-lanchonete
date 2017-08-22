@@ -55,7 +55,7 @@ public class PromoListPresenterTest {
 
     @Test
     public void whenServiceReturnWithErrorTheViewMustShowAnErrorMessage(){
-        presenter.getCallback().onError(Mockito.any(RuntimeException.class));
+        presenter.getCallback().onErro(Mockito.any(RuntimeException.class));
         Mockito.verify(mockView).onShowErrorMessage(Mockito.anyString());
     }
 

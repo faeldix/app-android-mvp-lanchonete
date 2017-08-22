@@ -8,6 +8,7 @@ import javax.inject.Inject;
 
 import rafael.com.br.lanchonete.adapter.LunchListAdapter;
 import rafael.com.br.lanchonete.model.Lunch;
+import rafael.com.br.lanchonete.service.BaseRequestCallback;
 import rafael.com.br.lanchonete.service.LunchService;
 import rafael.com.br.lanchonete.service.LunchServiceRESTImpl;
 import rafael.com.br.lanchonete.view.LunchListView;
@@ -38,16 +39,16 @@ public class LunchListPresenterImpl implements LunchListPresenter {
         service.getListOfLunchs(getOnRequestListOfLunchsFinishedCallback());
     }
 
-    public OnRequestListOfLunchsFinished getOnRequestListOfLunchsFinishedCallback(){
-        return new OnRequestListOfLunchsFinished() {
+    public BaseRequestCallback<List<Lunch>,RuntimeException> getOnRequestListOfLunchsFinishedCallback() {
+        return new BaseRequestCallback<List<Lunch>, RuntimeException>() {
 
             @Override
-            public void onSuccess(List<Lunch> lunchs) {
-                view.showListOfLunch(lunchs);
+            public void onSuccess(List<Lunch> result) {
+                view.showListOfLunch(result);
             }
 
             @Override
-            public void onError(Exception e) {
+            public void onErro(RuntimeException err) {
                 view.onShowErrorMessage("Desculpe. Não foi possivel carregar a lista de lanches.");
             }
 
@@ -60,7 +61,6 @@ public class LunchListPresenterImpl implements LunchListPresenter {
             public void onEnd() {
                 view.onDismissLoading();
             }
-
         };
     }
 

@@ -3,6 +3,7 @@ package rafael.com.br.lanchonete.presenter;
 import java.util.List;
 
 import rafael.com.br.lanchonete.model.Order;
+import rafael.com.br.lanchonete.service.BaseRequestCallback;
 import rafael.com.br.lanchonete.service.OrderService;
 import rafael.com.br.lanchonete.view.OrderListView;
 
@@ -24,16 +25,16 @@ public class OrderListPresenterImpl implements OrderListPresenter {
         service.getOrders(getOrdersCallback());
     }
 
-    public OrderService.GetOrdersCallback getOrdersCallback(){
-        return new OrderService.GetOrdersCallback() {
+    public BaseRequestCallback<List<Order>,RuntimeException> getOrdersCallback() {
+        return new BaseRequestCallback<List<Order>, RuntimeException>() {
 
             @Override
-            public void onSuccess(List<Order> orders) {
-                view.showListOfOrder(orders);
+            public void onSuccess(List<Order> result) {
+                view.showListOfOrder(result);
             }
 
             @Override
-            public void onError(Throwable err) {
+            public void onErro(RuntimeException err) {
                 view.onShowErrorMessage("Não foi possivel buscar a lista de pedidos");
             }
 
@@ -46,6 +47,7 @@ public class OrderListPresenterImpl implements OrderListPresenter {
             public void onEnd() {
                 view.onDismissLoading();
             }
+
         };
     }
 

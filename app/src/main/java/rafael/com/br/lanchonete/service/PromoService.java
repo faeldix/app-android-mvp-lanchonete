@@ -10,13 +10,6 @@ import rafael.com.br.lanchonete.model.Promo;
 
 public interface PromoService {
 
-    void getListOfPromos(PromoServiceResponseCallback callback);
-
-    interface PromoServiceResponseCallback extends BaseRequestCallback {
-
-        public void onSuccess(List<Promo> promos);
-        public void onError(Throwable e);
-
-    }
+    void getListOfPromos(BaseRequestCallback<List<Promo>, RuntimeException> callback);
 
 }

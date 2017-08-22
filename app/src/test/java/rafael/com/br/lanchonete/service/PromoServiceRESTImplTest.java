@@ -43,7 +43,7 @@ public class PromoServiceRESTImplTest {
     private API mockApi;
 
     @Mock
-    private PromoServiceResponseCallback mockCallback;
+    private BaseRequestCallback<List<Promo>, RuntimeException> mockCallback;
 
     @Spy
     private PromoServiceRESTImpl mockService;
@@ -83,7 +83,7 @@ public class PromoServiceRESTImplTest {
         mockService.getListOfPromos(mockCallback);
 
         verify(mockCallback).onStart();
-        verify(mockCallback).onError(any(RuntimeException.class));
+        verify(mockCallback).onErro(any(RuntimeException.class));
         verify(mockCallback).onEnd();
     }
 

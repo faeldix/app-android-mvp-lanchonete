@@ -53,7 +53,7 @@ public class LunchListPresenterImplTest {
 
     @Test
     public void whenServiceReturnWithErrorTheViewMustShowAnErrorMessage(){
-        presenter.getOnRequestListOfLunchsFinishedCallback().onError(Mockito.any(RuntimeException.class));
+        presenter.getOnRequestListOfLunchsFinishedCallback().onErro(Mockito.any(RuntimeException.class));
         Mockito.verify(mockView).onShowErrorMessage(Mockito.anyString());
     }
 

@@ -39,11 +39,9 @@ import static io.reactivex.Observable.fromIterable;
 public class OrderServiceRESTImpl implements OrderService {
 
     private API api;
-    private LunchService lunchService;
 
-    public OrderServiceRESTImpl(API api, LunchService lunchService) {
+    public OrderServiceRESTImpl(API api) {
         this.api = api;
-        this.lunchService = lunchService;
     }
 
     /* get list of orders structure */

@@ -60,7 +60,7 @@ public class LunchServiceRESTImplTest {
     private LunchServiceRESTImpl mockImplementation;
 
     @Mock
-    private OnRequestListOfLunchsFinished callback;
+    private BaseRequestCallback<List<Lunch>, RuntimeException> callback;
 
     @Captor
     private ArgumentCaptor<List<Lunch>> captor;
@@ -100,7 +100,7 @@ public class LunchServiceRESTImplTest {
         mockImplementation.getListOfLunchs(callback);
 
         verify(callback).onStart();
-        verify(callback).onError(any(RuntimeException.class));
+        verify(callback).onErro(any(RuntimeException.class));
         verify(callback).onEnd();
     }
 

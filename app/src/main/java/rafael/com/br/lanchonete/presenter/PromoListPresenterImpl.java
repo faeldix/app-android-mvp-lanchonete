@@ -3,6 +3,7 @@ package rafael.com.br.lanchonete.presenter;
 import java.util.List;
 
 import rafael.com.br.lanchonete.model.Promo;
+import rafael.com.br.lanchonete.service.BaseRequestCallback;
 import rafael.com.br.lanchonete.service.PromoService;
 import rafael.com.br.lanchonete.view.PromoListView;
 
@@ -23,22 +24,22 @@ public class PromoListPresenterImpl implements PromoListPresenter {
 
     @Override
     public void getListOfPromo() {
-        if(view == null)
+        if (view == null)
             throw new IllegalStateException("A view não foi setada para a classe: " + getClass().getName());
 
         service.getListOfPromos(getCallback());
     }
 
-    public PromoService.PromoServiceResponseCallback getCallback(){
-        return new PromoService.PromoServiceResponseCallback() {
+    public BaseRequestCallback<List<Promo>,RuntimeException> getCallback() {
+        return new BaseRequestCallback<List<Promo>, RuntimeException>() {
 
             @Override
-            public void onSuccess(List<Promo> promos) {
-                view.showListOfPromos(promos);
+            public void onSuccess(List<Promo> result) {
+                view.showListOfPromos(result);
             }
 
             @Override
-            public void onError(Throwable e) {
+            public void onErro(RuntimeException err) {
                 view.onShowErrorMessage("Não foi possivel buscar as promoções");
             }
 
