@@ -10,6 +10,7 @@ import android.support.v7.widget.RecyclerView;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.Toast;
 
 import com.squareup.picasso.Picasso;
 
@@ -37,6 +38,9 @@ public class FragmentLunchListView extends BaseFragment implements LunchListView
     @Override
     public void onCreate(@Nullable Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
+
+        getActivity().setTitle("Lista de Lanches");
+        presenter.getListOfLunch();
     }
 
     @Nullable
@@ -48,13 +52,6 @@ public class FragmentLunchListView extends BaseFragment implements LunchListView
         recycler.setLayoutManager(new LinearLayoutManager(getActivity()));
 
         return view;
-    }
-
-    @Override
-    public void onActivityCreated(@Nullable Bundle savedInstanceState) {
-        super.onActivityCreated(savedInstanceState);
-
-        presenter.getListOfLunch();
     }
 
     @Override
@@ -95,7 +92,7 @@ public class FragmentLunchListView extends BaseFragment implements LunchListView
 
                     @Override
                     public void onClick(DialogInterface dialog, int which) {
-                        goToOrderFinish(lunch);
+                        presenter.onMakeOrder(lunch);
                     }
 
                 })
@@ -103,7 +100,8 @@ public class FragmentLunchListView extends BaseFragment implements LunchListView
 
                     @Override
                     public void onClick(DialogInterface dialog, int which) {
-                        goToCustomize(lunch);
+                        Toast.makeText(getActivity(), "TODO", Toast.LENGTH_SHORT).show();
+//                        goToCustomize(lunch);
                     }
 
                 })
@@ -117,6 +115,11 @@ public class FragmentLunchListView extends BaseFragment implements LunchListView
                 })
                 .show();
         ;
+    }
+
+    @Override
+    public void showSuccessMessageOfOrder() {
+        Toast.makeText(getActivity(), "Pedido feito com sucesso", Toast.LENGTH_SHORT).show();
     }
 
     @Override

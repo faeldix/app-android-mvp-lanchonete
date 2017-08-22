@@ -1,6 +1,7 @@
 package rafael.com.br.lanchonete.module;
 
 import android.content.Context;
+import android.util.Log;
 
 import com.google.gson.Gson;
 import com.jakewharton.picasso.OkHttp3Downloader;
@@ -9,8 +10,6 @@ import com.squareup.picasso.Picasso;
 
 import java.io.File;
 import java.io.IOException;
-import java.util.concurrent.Executor;
-import java.util.concurrent.ExecutorService;
 
 import javax.inject.Singleton;
 
@@ -22,11 +21,14 @@ import okhttp3.Interceptor;
 import okhttp3.OkHttpClient;
 import okhttp3.Request;
 import okhttp3.Response;
+import okhttp3.logging.HttpLoggingInterceptor;
 import rafael.com.br.lanchonete.api.API;
 import rafael.com.br.lanchonete.BuildConfig;
 import rafael.com.br.lanchonete.net.NetworkUtils;
 import retrofit2.Retrofit;
 import retrofit2.converter.gson.GsonConverterFactory;
+
+import static okhttp3.logging.HttpLoggingInterceptor.*;
 
 /**
  * Created by rafael-iteris on 14/08/2017.
@@ -53,38 +55,22 @@ public class HTTPModule {
 
     @Provides
     @Singleton
-    public OkHttpClient provideOkHttp(final Cache cache, final Interceptor interceptor, Dispatcher dispatcher){
-        return new OkHttpClient().newBuilder()
+    public OkHttpClient provideOkHttp(final Cache cache, Dispatcher dispatcher){
+        OkHttpClient.Builder builder = new OkHttpClient().newBuilder();
+
+        if(BuildConfig.DEBUG){
+            HttpLoggingInterceptor logging = new HttpLoggingInterceptor();
+            logging.setLevel(Level.BASIC);
+
+            builder.addInterceptor(logging);
+        }
+
+        return   builder
                 .dispatcher(dispatcher)
-                .addNetworkInterceptor(interceptor)
+                .addNetworkInterceptor(new ResponseCacheInterceptor())
+                .addInterceptor(new OfflineResponseCacheInterceptor())
                 .cache(cache)
                 .build();
-    }
-
-    @Provides
-    @Singleton
-    public Interceptor provideCacheInterceptor(final Context context){
-        return new Interceptor() {
-            @Override
-            public Response intercept(Chain chain) throws IOException {
-                Request request = chain.request();
-
-                if(NetworkUtils.isConnected()){
-                    request = request.newBuilder().addHeader("Cache-Control", "max-age=" + (60*60*24)).build(); // 1 day
-                } else {
-                    request = request.newBuilder()
-                            .addHeader("Cache-Control", "public, only-if-cached, max-stale=" + (60*60*24*10))
-                            .build(); // 10 days
-                }
-
-                Response response = chain.proceed(request);
-                response = response.newBuilder()
-                        .removeHeader("Cache-Control")
-                        .addHeader("Cache-Control", "max-age=" + (60*60*24)).build();
-
-                return response;
-            }
-        };
     }
 
     @Provides
@@ -110,6 +96,41 @@ public class HTTPModule {
                 .downloader(new OkHttp3Downloader(client))
                 .loggingEnabled(BuildConfig.DEBUG)
                 .build();
+    }
+
+    private static class OfflineResponseCacheInterceptor implements Interceptor {
+
+        @Override
+        public okhttp3.Response intercept(Chain chain) throws IOException {
+            Request request = chain.request();
+
+            if (!NetworkUtils.isConnected()) {
+                request = request.newBuilder()
+                        .header("Cache-Control",
+                                "public, only-if-cached, max-stale=" + 60 * 60 * 24 * 7) // 1 week
+                        .build();
+            }
+
+            return chain.proceed(request);
+        }
+
+    }
+
+    private static class ResponseCacheInterceptor implements Interceptor {
+
+        @Override
+        public okhttp3.Response intercept(Chain chain) throws IOException {
+            Response response = chain.proceed(chain.request());
+
+            if(response.headers().get("Cache-Control") != null){
+                return response;
+            }
+
+            return response.newBuilder()
+                    .header("Cache-Control", "public, max-age=" + 3) // 3 seconds
+                    .build();
+        }
+
     }
 
 }

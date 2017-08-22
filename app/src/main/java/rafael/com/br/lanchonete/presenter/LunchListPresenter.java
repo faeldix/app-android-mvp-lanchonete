@@ -12,6 +12,8 @@ import rafael.com.br.lanchonete.view.LunchListView;
 public interface LunchListPresenter extends BasePresenter<LunchListView> {
 
     public void getListOfLunch();
+
     public void onSelectAnLunchOfList(Lunch item);
+    public void onMakeOrder(Lunch lunch);
 
 }

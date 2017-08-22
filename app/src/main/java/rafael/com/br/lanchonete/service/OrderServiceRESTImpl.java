@@ -1,5 +1,7 @@
 package rafael.com.br.lanchonete.service;
 
+import android.util.Log;
+
 import org.json.JSONArray;
 
 import java.math.BigDecimal;
@@ -106,9 +108,10 @@ public class OrderServiceRESTImpl implements OrderService {
                         Order order = new Order();
                         order.setLunch(lunch);
                         order.setId(orderResponseVO.id);
+                        order.setDate(orderResponseVO.date);
 
-                        for (int i = 0; i < orderResponseVO.extras.length(); i++) {
-                            int id = orderResponseVO.extras.getInt(i);
+                        for (int i = 0; i < orderResponseVO.extras.size(); i++) {
+                            int id = orderResponseVO.extras.get(i);
                             order.addIngredient(hashIngredients.get(id));
                         }
 

@@ -9,6 +9,8 @@ import android.widget.TextView;
 
 import com.squareup.picasso.Picasso;
 
+import java.text.DateFormat;
+import java.text.SimpleDateFormat;
 import java.util.List;
 
 import butterknife.BindView;
@@ -25,6 +27,8 @@ public class OrderListAdapter extends RecyclerView.Adapter<OrderListAdapter.Item
     private List<Order> orders;
     private Picasso picasso;
 
+    private DateFormat formatter = new SimpleDateFormat("dd/MM/yyyy");
+
     public OrderListAdapter(List<Order> orders, Picasso picasso) {
         this.orders = orders;
         this.picasso = picasso;
@@ -36,22 +40,26 @@ public class OrderListAdapter extends RecyclerView.Adapter<OrderListAdapter.Item
         return new ItemViewHolder(inflated);
     }
 
+
+
     @Override
     public void onBindViewHolder(ItemViewHolder holder, int position) {
         final Order order = orders.get(position);
 
         holder.title.setText(order.getLunch().getName());
-        holder.price.setText("R$ " + order.getLunch().getPrice().toString());
-        holder.total.setText(order.getFinalPrice().toString());
+        holder.price.setText("R$ " + order.getFinalPrice().toString());
 
         holder.ingredients.setText("Ingredientes: " + order.getLunch().getIngredientListDescription());
         holder.extras.setText("Extras: " + order.getDescriptionOfIngredientsExtras());
+        holder.date.setText(formatter.format(order.getDate()));
 
         picasso.load(order.getLunch().getImage())
                 .resize(75, 75)
                 .placeholder(R.mipmap.ic_launcher)
                 .into(holder.img);
     }
+
+
 
     @Override
     public int getItemCount() {
@@ -76,8 +84,8 @@ public class OrderListAdapter extends RecyclerView.Adapter<OrderListAdapter.Item
         @BindView(R.id.txt_extra_ingredients)
         TextView extras;
 
-        @BindView(R.id.total)
-        TextView total;
+        @BindView(R.id.txt_order_date)
+        TextView date;
 
         public ItemViewHolder(View itemView) {
             super(itemView);

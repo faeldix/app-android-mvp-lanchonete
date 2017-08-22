@@ -17,11 +17,10 @@ import retrofit2.http.Field;
 public class OrderResponseVO {
 
     public Integer id;
-
     @SerializedName("id_sandwich")
     public Integer lunchId;
-
-    public JSONArray extras;
+    @SerializedName("extras")
+    public List<Integer> extras;
     public Date date;
 
     public OrderResponseVO() {}
@@ -30,7 +29,7 @@ public class OrderResponseVO {
         this.id = id;
     }
 
-    public OrderResponseVO(Integer id, Integer lunchId, JSONArray extras, Date date) {
+    public OrderResponseVO(Integer id, Integer lunchId, List<Integer> extras, Date date) {
         this.id = id;
         this.lunchId = lunchId;
         this.extras = extras;

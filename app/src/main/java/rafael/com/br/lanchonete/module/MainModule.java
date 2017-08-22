@@ -57,8 +57,8 @@ public class MainModule {
     }
 
     @Provides @ActivityScope
-    public LunchListPresenter provideLunchListPresenter(LunchService service){
-        return new LunchListPresenterImpl(service);
+    public LunchListPresenter provideLunchListPresenter(LunchService service, OrderService orderService){
+        return new LunchListPresenterImpl(service, orderService);
     }
 
     /* promo */
@@ -80,9 +80,10 @@ public class MainModule {
     /* orders */
 
     @Provides @ActivityScope
-    public OrderListView provideOrderListView(OrderListPresenter presenter){
+    public OrderListView provideOrderListView(OrderListPresenter presenter, Picasso picasso){
         FragmentOrderListView view = new FragmentOrderListView();
         view.setPresenter(presenter);
+        view.setPicasso(picasso);
 
         presenter.setView(view);
 

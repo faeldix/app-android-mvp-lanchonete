@@ -16,12 +16,17 @@ public class OrderListPresenterImpl implements OrderListPresenter {
     private OrderListView view;
     private OrderService service;
 
+    public OrderListPresenterImpl() {}
+
     public OrderListPresenterImpl(OrderService service) {
         this.service = service;
     }
 
     @Override
     public void getListOfOrders() {
+        if(view == null)
+            throw new IllegalStateException("A view deve ser setada.");
+
         service.getOrders(getOrdersCallback());
     }
 
@@ -35,6 +40,8 @@ public class OrderListPresenterImpl implements OrderListPresenter {
 
             @Override
             public void onErro(RuntimeException err) {
+                err.printStackTrace();
+
                 view.onShowErrorMessage("Não foi possivel buscar a lista de pedidos");
             }
 

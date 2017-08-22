@@ -37,6 +37,9 @@ public class FragmentPromoListView extends BaseFragment implements PromoListView
     @Override
     public void onCreate(@Nullable Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
+
+        getActivity().setTitle("Lista de Promoções");
+        presenter.getListOfPromo();
     }
 
     @Nullable
@@ -46,13 +49,6 @@ public class FragmentPromoListView extends BaseFragment implements PromoListView
         ButterKnife.bind(this, inflated);
 
         return inflated;
-    }
-
-    @Override
-    public void onActivityCreated(@Nullable Bundle savedInstanceState) {
-        super.onActivityCreated(savedInstanceState);
-
-        presenter.getListOfPromo();
     }
 
     @Override

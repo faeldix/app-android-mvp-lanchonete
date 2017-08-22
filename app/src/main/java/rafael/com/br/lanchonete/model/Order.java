@@ -3,6 +3,7 @@ package rafael.com.br.lanchonete.model;
 import java.math.BigDecimal;
 import java.util.ArrayList;
 import java.util.Collections;
+import java.util.Date;
 import java.util.List;
 
 /**
@@ -18,6 +19,7 @@ public class Order {
 
     private Integer id;
     private Lunch lunch;
+    private Date date;
     private List<Ingredient> extras = new ArrayList<Ingredient>();
 
     public Order() {}
@@ -69,7 +71,7 @@ public class Order {
         }
 
         int last = builder.lastIndexOf(",");
-        return builder.substring(0, last);
+        return last > 0 ?  builder.substring(0, last) : builder.toString();
     }
 
     //TODO make a cache for this value
@@ -169,6 +171,14 @@ public class Order {
         return number;
     }
 
+    public Date getDate() {
+        return date;
+    }
+
+    public void setDate(Date date) {
+        this.date = date;
+    }
+
     @Override
     public boolean equals(Object o) {
         if (this == o) return true;
@@ -191,5 +201,4 @@ public class Order {
                 ", extras=" + extras +
                 '}';
     }
-
 }

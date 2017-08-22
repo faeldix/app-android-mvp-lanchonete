@@ -17,7 +17,7 @@ import rafael.com.br.lanchonete.view.PromoListView;
  */
 
 @RunWith(MockitoJUnitRunner.class)
-public class PromoListPresenterTest {
+public class PromoListPresenterImplTest {
 
     @Mock
     private PromoListView mockView;

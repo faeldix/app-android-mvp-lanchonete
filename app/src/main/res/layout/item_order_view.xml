@@ -42,6 +42,12 @@
             android:layout_height="wrap_content"
             android:text="Extras: " />
 
+        <TextView
+            android:id="@+id/txt_order_date"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:text="Data: " />
+
     </LinearLayout>
 
     <LinearLayout
@@ -56,23 +62,6 @@
             android:layout_margin="10dp"
             android:layout_gravity="center"
             android:src="@mipmap/ic_launcher" />
-
-    </LinearLayout>
-
-    <LinearLayout
-        android:layout_width="match_parent"
-        android:layout_height="match_parent"
-        android:layout_weight="2">
-
-        <TextView
-            android:id="@+id/total"
-            android:layout_width="match_parent"
-            android:layout_height="match_parent"
-            android:gravity="center"
-            android:text="R$ 230"
-            android:textAlignment="center"
-            android:textSize="20dp"
-            android:textStyle="bold" />
 
     </LinearLayout>
 
