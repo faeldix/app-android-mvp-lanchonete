@@ -27,6 +27,7 @@ import rafael.com.br.lanchonete.model.Ingredient;
 import rafael.com.br.lanchonete.model.Lunch;
 import rafael.com.br.lanchonete.model.Order;
 
+import static io.reactivex.Observable.*;
 import static io.reactivex.Observable.empty;
 import static io.reactivex.Observable.fromIterable;
 
@@ -39,6 +40,8 @@ import static io.reactivex.Observable.fromIterable;
 public class OrderServiceRESTImpl implements OrderService {
 
     private API api;
+
+    public OrderServiceRESTImpl() {}
 
     public OrderServiceRESTImpl(API api) {
         this.api = api;
@@ -102,6 +105,7 @@ public class OrderServiceRESTImpl implements OrderService {
 
                         Order order = new Order();
                         order.setLunch(lunch);
+                        order.setId(orderResponseVO.id);
 
                         for (int i = 0; i < orderResponseVO.extras.length(); i++) {
                             int id = orderResponseVO.extras.getInt(i);
@@ -160,58 +164,7 @@ public class OrderServiceRESTImpl implements OrderService {
                 .observeOn(AndroidSchedulers.mainThread());
     }
 
-    /* create order */
-
-    @Override
-    public void createOrder(Order order, BaseRequestCallback<Void, RuntimeException> callback) {
-        getCreateOrderRequest(order)
-                .onErrorResumeNext(getCreateOrderError(callback))
-                .subscribe(getCreateOrderSuccess(callback));
-    }
-
-    public Observable<OrderResponseVO> getCreateOrderRequest(Order order){
-        AddOrderRequestVO vo = new AddOrderRequestVO();
-        vo.itens = Observable.fromIterable(order.getExtras())
-                .collectInto(new JSONArray(), new BiConsumer<JSONArray, Ingredient>() {
-
-            @Override
-            public void accept(JSONArray array, Ingredient ingredient) throws Exception {
-                array.put(ingredient.getId());
-            }
-
-        }).blockingGet();
-
-        return api.createOrder(order.getLunch().getId(), vo).subscribeOn(Schedulers.newThread())
-                .observeOn(AndroidSchedulers.mainThread());
-    }
-
-    public Consumer<OrderResponseVO> getCreateOrderSuccess(final BaseRequestCallback<Void, RuntimeException> callback){
-        return new Consumer<OrderResponseVO>() {
-
-            @Override
-            public void accept(OrderResponseVO orderResponseVO) throws Exception {
-                callback.onSuccess(null);
-                callback.onEnd();
-            }
-
-        };
-    }
-
-    public Function<Throwable, ObservableSource<? extends OrderResponseVO>> getCreateOrderError(final BaseRequestCallback<Void, RuntimeException> callback){
-        return new Function<Throwable, ObservableSource<? extends OrderResponseVO>>() {
-
-            @Override
-            public ObservableSource<? extends OrderResponseVO> apply(@NonNull Throwable throwable) throws Exception {
-                callback.onErro(new RuntimeException("Não foi foi possivel salvar o pedido.", throwable));
-                callback.onEnd();
-
-                return empty();
-            }
-
-        };
-    }
-
-    public static class OrdersZippedResponse {
+    private static class OrdersZippedResponse {
 
         private List<OrderResponseVO> orderResponseVOs;
         private List<IngredientResponseVO> ingredientResponseVOs;
@@ -235,6 +188,70 @@ public class OrderServiceRESTImpl implements OrderService {
             return infoLunchResponseVOs;
         }
 
+    }
+
+    /* create order */
+
+    @Override
+    public void createOrder(Order order, BaseRequestCallback<Order, RuntimeException> callback) {
+        callback.onStart();
+
+        getCreateOrderRequest(order)
+                .onErrorResumeNext(getCreateOrderError(callback))
+                .subscribe(getCreateOrderSuccess(order, callback));
+    }
+
+    public Observable<OrderResponseVO> getCreateOrderRequest(Order order){
+        AddOrderRequestVO vo = new AddOrderRequestVO();
+        vo.itens = fromIterable(order.getExtras())
+                .collectInto(new JSONArray(), new BiConsumer<JSONArray, Ingredient>() {
+
+            @Override
+            public void accept(JSONArray array, Ingredient ingredient) throws Exception {
+                array.put(ingredient.getId());
+            }
+
+        }).blockingGet();
+
+        return api.createOrder(order.getLunch().getId(), vo)
+                .subscribeOn(Schedulers.newThread())
+                .observeOn(AndroidSchedulers.mainThread());
+    }
+
+    public Consumer<OrderResponseVO> getCreateOrderSuccess(final Order order, final BaseRequestCallback<Order, RuntimeException> callback){
+        return new Consumer<OrderResponseVO>() {
+
+            @Override
+            public void accept(OrderResponseVO response) throws Exception {
+                order.setId(response.id); // adicionando o ID gerado
+
+                callback.onSuccess(order);
+                callback.onEnd();
+            }
+
+        };
+    }
+
+    public Function<Throwable, ObservableSource<? extends OrderResponseVO>> getCreateOrderError(final BaseRequestCallback<Order, RuntimeException> callback){
+        return new Function<Throwable, ObservableSource<? extends OrderResponseVO>>() {
+
+            @Override
+            public ObservableSource<? extends OrderResponseVO> apply(@NonNull Throwable throwable) throws Exception {
+                callback.onErro(new RuntimeException("Não foi foi possivel salvar o pedido.", throwable));
+                callback.onEnd();
+
+                return empty();
+            }
+
+        };
+    }
+
+    public API getApi() {
+        return api;
+    }
+
+    public void setApi(API api) {
+        this.api = api;
     }
 
 }

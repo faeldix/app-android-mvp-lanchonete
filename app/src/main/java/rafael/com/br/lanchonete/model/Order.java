@@ -16,6 +16,7 @@ public class Order {
     public static final int NUMBER_OF_MEAT_DISCOUNT = 3;
     public static final int NUMBER_OF_CHEESE_DISCOUNT = 3;
 
+    private Integer id;
     private Lunch lunch;
     private List<Ingredient> extras = new ArrayList<Ingredient>();
 
@@ -25,7 +26,8 @@ public class Order {
         this.lunch = lunch;
     }
 
-    public Order(Lunch lunch, List<Ingredient> extras) {
+    public Order(Integer id, Lunch lunch, List<Ingredient> extras) {
+        this.id = id;
         this.lunch = lunch;
         this.extras.addAll(extras);
     }
@@ -36,6 +38,14 @@ public class Order {
 
     public void setLunch(Lunch lunch) {
         this.lunch = lunch;
+    }
+
+    public Integer getId() {
+        return id;
+    }
+
+    public void setId(Integer id) {
+        this.id = id;
     }
 
     public void addIngredient(Ingredient ingredient){

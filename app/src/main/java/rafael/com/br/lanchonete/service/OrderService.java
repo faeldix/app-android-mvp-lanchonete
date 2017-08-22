@@ -12,6 +12,6 @@ import rafael.com.br.lanchonete.model.Order;
 public interface OrderService {
 
     void getOrders(BaseRequestCallback<List<Order>, RuntimeException> callback);
-    void createOrder(Order order, BaseRequestCallback<Void, RuntimeException> callback);
+    void createOrder(Order order, BaseRequestCallback<Order, RuntimeException> callback);
 
 }

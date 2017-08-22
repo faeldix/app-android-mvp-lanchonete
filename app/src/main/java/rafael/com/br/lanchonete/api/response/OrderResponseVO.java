@@ -24,4 +24,17 @@ public class OrderResponseVO {
     public JSONArray extras;
     public Date date;
 
+    public OrderResponseVO() {}
+
+    public OrderResponseVO(Integer id) {
+        this.id = id;
+    }
+
+    public OrderResponseVO(Integer id, Integer lunchId, JSONArray extras, Date date) {
+        this.id = id;
+        this.lunchId = lunchId;
+        this.extras = extras;
+        this.date = date;
+    }
+
 }
