@@ -17,6 +17,9 @@ public class NetworkUtils {
     }
 
     public static boolean isConnected(){
+        if(context == null)
+            throw new IllegalStateException("É necessário inicializar o o utilitário de rede: " + NetworkUtils.class.getCanonicalName());
+
         ConnectivityManager connectivityManager = (ConnectivityManager) context.getSystemService(Context.CONNECTIVITY_SERVICE);
         NetworkInfo activeNetworkInfo = connectivityManager.getActiveNetworkInfo();
 

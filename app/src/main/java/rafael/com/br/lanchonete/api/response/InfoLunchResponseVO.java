@@ -22,4 +22,13 @@ public class InfoLunchResponseVO {
     @SerializedName("ingredients")
     public List<Integer> ingredients = new ArrayList<>();
 
+    public InfoLunchResponseVO() {}
+
+    public InfoLunchResponseVO(Integer id, String name, String image, List<Integer> ingredients) {
+        this.id = id;
+        this.name = name;
+        this.image = image;
+        this.ingredients = ingredients;
+    }
+
 }

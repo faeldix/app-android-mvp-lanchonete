@@ -147,6 +147,8 @@ public class LunchServiceRESTImpl implements LunchService {
 
     @Override
     public void getInfoOfLunch(Integer id, final BaseRequestCallback<Lunch, RuntimeException> callback) {
+        callback.onStart();
+
         zipInfoLunch(id).onErrorResumeNext(getCallbackofErrorInfoLunch(callback)).subscribe(getCallbackOfSuccessInfoLunch(callback));
     }
 

@@ -11,6 +11,7 @@ import rafael.com.br.lanchonete.component.ApplicationComponent;
 import rafael.com.br.lanchonete.component.DaggerApplicationComponent;
 import rafael.com.br.lanchonete.module.ApplicationModule;
 import rafael.com.br.lanchonete.module.HTTPModule;
+import rafael.com.br.lanchonete.net.NetworkUtils;
 
 /**
  * Created by rafaelfreitas on 8/16/17.
@@ -25,6 +26,8 @@ public class App extends Application {
         super.onCreate();
 
         Iconify.with(new FontAwesomeModule());
+
+        NetworkUtils.init(this);
 
         app = DaggerApplicationComponent.builder()
                 .applicationModule(new ApplicationModule(this))

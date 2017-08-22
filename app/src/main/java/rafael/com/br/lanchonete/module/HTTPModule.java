@@ -69,7 +69,7 @@ public class HTTPModule {
             public Response intercept(Chain chain) throws IOException {
                 Request request = chain.request();
 
-                if(NetworkUtils.isConnected(context)){
+                if(NetworkUtils.isConnected()){
                     request = request.newBuilder().addHeader("Cache-Control", "max-age=" + (60*60*24)).build(); // 1 day
                 } else {
                     request = request.newBuilder()
