@@ -200,7 +200,7 @@ public class OrderServiceRESTImplTest {
         vo.id = id;
         vo.lunchId = lunchId;
         vo.date = new Date();
-        vo.extras = new JSONArray().put(1).put(2);
+        vo.extras = Arrays.asList(1, 2);
 
         return vo;
     }

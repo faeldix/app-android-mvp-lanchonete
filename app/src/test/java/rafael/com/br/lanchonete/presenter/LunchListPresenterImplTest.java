@@ -12,8 +12,11 @@ import org.mockito.runners.MockitoJUnitRunner;
 import org.robolectric.RobolectricTestRunner;
 
 import rafael.com.br.lanchonete.model.Lunch;
+import rafael.com.br.lanchonete.model.Order;
 import rafael.com.br.lanchonete.service.LunchService;
 import rafael.com.br.lanchonete.view.LunchListView;
+
+import static org.mockito.Mockito.*;
 
 /**
  * Created by rafael-iteris on 18/08/17.
@@ -34,43 +37,75 @@ public class LunchListPresenterImplTest {
     }
 
     @Test
-    public void whenServiceStartsTheRequestTheViewMustShowProgress(){
+    public void whenServiceStartTheRequestOfAnOrderTheViewMustShowProgress(){
+        presenter.setView(mockView);
+
+        presenter.getOnRequestOrderFinishedCallback().onStart();
+        verify(mockView).onShowLoading();
+    }
+
+    @Test
+    public void whenServiceEndTheRequestOfAnOrderTheViewMustRemoveTheProgress(){
+        presenter.setView(mockView);
+
+        presenter.getOnRequestOrderFinishedCallback().onEnd();
+        verify(mockView).onDismissLoading();
+    }
+
+    @Test
+    public void whenServiceEndTheRequestOfAnOrderWithSuccessTheViewMustShowAnSuccessMessage(){
+        presenter.setView(mockView);
+
+        presenter.getOnRequestOrderFinishedCallback().onSuccess(mock(Order.class));
+        verify(mockView).showSuccessMessageOfOrder();
+    }
+
+    @Test
+    public void whenServiceEndTheRequestOfAnOrderWithErrorTheViewMustShowAnErrorMessage(){
+        presenter.setView(mockView);
+
+        presenter.getOnRequestOrderFinishedCallback().onErro(any(RuntimeException.class));
+        verify(mockView).onShowErrorMessage(anyString());
+    }
+
+    @Test
+    public void whenServiceStartsTheRequestOfListOfLunchsTheViewMustShowProgress(){
         presenter.setView(mockView);
 
         presenter.getOnRequestListOfLunchsFinishedCallback().onStart();
-        Mockito.verify(mockView).onShowLoading();
+        verify(mockView).onShowLoading();
     }
 
     @Test
-    public void whenServiceEndTheRequestTheViewMustRemoveTheProgress(){
+    public void whenServiceEndTheRequestOfListOfLunchsTheViewMustRemoveTheProgress(){
         presenter.setView(mockView);
 
         presenter.getOnRequestListOfLunchsFinishedCallback().onEnd();
-        Mockito.verify(mockView).onDismissLoading();
+        verify(mockView).onDismissLoading();
     }
 
     @Test
-    public void whenServiceReturnWithSuccessTheViewMustShowTheListOfItens(){
+    public void whenServiceEndTheRequestOfListOfLunchsWithSuccessTheViewMustShowTheListOfItens(){
         presenter.setView(mockView);
 
-        presenter.getOnRequestListOfLunchsFinishedCallback().onSuccess(Mockito.anyList());
-        Mockito.verify(mockView).showListOfLunch(Mockito.anyList());
+        presenter.getOnRequestListOfLunchsFinishedCallback().onSuccess(anyList());
+        verify(mockView).showListOfLunch(anyList());
     }
 
     @Test
-    public void whenServiceReturnWithErrorTheViewMustShowAnErrorMessage(){
+    public void whenServiceEndTheRequestOfListOfLunchsReturnWithErrorTheViewMustShowAnErrorMessage(){
         presenter.setView(mockView);
 
-        presenter.getOnRequestListOfLunchsFinishedCallback().onErro(Mockito.any(RuntimeException.class));
-        Mockito.verify(mockView).onShowErrorMessage(Mockito.anyString());
+        presenter.getOnRequestListOfLunchsFinishedCallback().onErro(any(RuntimeException.class));
+        verify(mockView).onShowErrorMessage(anyString());
     }
 
     @Test
     public void whenAnItemIsSelectedTheViewMustShowOptions(){
         presenter.setView(mockView);
 
-        presenter.onSelectAnLunchOfList(Mockito.any(Lunch.class));
-        Mockito.verify(mockView).showOptionsOfLunch(Mockito.any(Lunch.class));
+        presenter.onSelectAnLunchOfList(any(Lunch.class));
+        verify(mockView).showOptionsOfLunch(any(Lunch.class));
     }
 
 

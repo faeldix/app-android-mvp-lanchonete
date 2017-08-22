@@ -40,8 +40,6 @@ public class OrderListPresenterImpl implements OrderListPresenter {
 
             @Override
             public void onErro(RuntimeException err) {
-                err.printStackTrace();
-
                 view.onShowErrorMessage("Não foi possivel buscar a lista de pedidos");
             }
 
