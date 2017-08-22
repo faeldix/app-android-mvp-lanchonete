@@ -28,37 +28,47 @@ public class LunchListPresenterImplTest {
     @Spy
     private LunchListPresenterImpl presenter;
 
-    @Before
-    public void init(){
-        presenter.setView(mockView);
+    @Test(expected = IllegalStateException.class)
+    public void whenViewIsNotSetTheMethodGetListOfPromoMustThrowAnException(){
+        presenter.getListOfLunch();
     }
 
     @Test
     public void whenServiceStartsTheRequestTheViewMustShowProgress(){
+        presenter.setView(mockView);
+
         presenter.getOnRequestListOfLunchsFinishedCallback().onStart();
         Mockito.verify(mockView).onShowLoading();
     }
 
     @Test
     public void whenServiceEndTheRequestTheViewMustRemoveTheProgress(){
+        presenter.setView(mockView);
+
         presenter.getOnRequestListOfLunchsFinishedCallback().onEnd();
         Mockito.verify(mockView).onDismissLoading();
     }
 
     @Test
     public void whenServiceReturnWithSuccessTheViewMustShowTheListOfItens(){
+        presenter.setView(mockView);
+
         presenter.getOnRequestListOfLunchsFinishedCallback().onSuccess(Mockito.anyList());
         Mockito.verify(mockView).showListOfLunch(Mockito.anyList());
     }
 
     @Test
     public void whenServiceReturnWithErrorTheViewMustShowAnErrorMessage(){
+        presenter.setView(mockView);
+
         presenter.getOnRequestListOfLunchsFinishedCallback().onErro(Mockito.any(RuntimeException.class));
         Mockito.verify(mockView).onShowErrorMessage(Mockito.anyString());
     }
 
     @Test
     public void whenAnItemIsSelectedTheViewMustShowOptions(){
+        presenter.setView(mockView);
+
         presenter.onSelectAnLunchOfList(Mockito.any(Lunch.class));
         Mockito.verify(mockView).showOptionsOfLunch(Mockito.any(Lunch.class));
     }
