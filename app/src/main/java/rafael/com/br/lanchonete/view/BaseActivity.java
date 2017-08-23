@@ -5,6 +5,8 @@ import android.os.Bundle;
 import android.support.annotation.Nullable;
 import android.support.v7.app.AppCompatActivity;
 
+import java.util.List;
+
 import rafael.com.br.lanchonete.App;
 import rafael.com.br.lanchonete.util.ProgressManager;
 
@@ -44,12 +46,12 @@ public abstract class BaseActivity extends AppCompatActivity implements BaseView
         stopProgress();
     }
 
-    public void startProgress(){
-        manager.show();
+    public synchronized void startProgress(){
+        if(!manager.getDialog().isShowing()) manager.show();
     }
 
-    public void stopProgress(){
-        manager.dismiss();
+    public synchronized void stopProgress(){
+        if(manager.getDialog().isShowing()) manager.dismiss();
     }
 
     public abstract void inject();

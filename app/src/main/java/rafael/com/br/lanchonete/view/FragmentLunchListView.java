@@ -18,6 +18,7 @@ import java.util.List;
 
 import butterknife.BindView;
 import butterknife.ButterKnife;
+import rafael.com.br.lanchonete.Constants;
 import rafael.com.br.lanchonete.R;
 import rafael.com.br.lanchonete.adapter.LunchListAdapter;
 import rafael.com.br.lanchonete.model.Lunch;
@@ -100,8 +101,7 @@ public class FragmentLunchListView extends BaseFragment implements LunchListView
 
                     @Override
                     public void onClick(DialogInterface dialog, int which) {
-                        Toast.makeText(getActivity(), "TODO", Toast.LENGTH_SHORT).show();
-//                        goToCustomize(lunch);
+                        goToCustomize(lunch);
                     }
 
                 })
@@ -114,7 +114,6 @@ public class FragmentLunchListView extends BaseFragment implements LunchListView
 
                 })
                 .show();
-        ;
     }
 
     @Override
@@ -124,12 +123,13 @@ public class FragmentLunchListView extends BaseFragment implements LunchListView
 
     @Override
     public void goToCustomize(Lunch lunch) {
-        Intent intent = new Intent(getContext(), null);
-    }
+        Bundle extras = new Bundle();
+        extras.putInt(Constants.BUNDLE_KEY_LUNCH_ID, lunch.getId());
 
-    @Override
-    public void goToOrderFinish(Lunch lunch) {
-        Intent intent = new Intent(getContext(), null);
+        Intent intent = new Intent(getContext(), CustomLunchActivity.class);
+        intent.putExtras(extras);
+
+        getActivity().startActivity(intent);
     }
 
     public LunchListPresenter getPresenter() {

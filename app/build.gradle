@@ -30,7 +30,7 @@ android {
             targetSdkVersion 25
             testInstrumentationRunner 'android.support.test.runner.AndroidJUnitRunner'
             versionNameSuffix '-dev'
-            buildConfigField "String", "SERVER_URL", "\"http://192.168.192.66:8080/api/\""
+            buildConfigField "String", "SERVER_URL", "\"http://192.168.193.32:8080/api/\""
         }
         homolog {
             applicationId 'rafael.com.br.lanchonete.homolog'
@@ -56,6 +56,7 @@ dependencies {
     })
 
     compile 'com.joanzapata.iconify:android-iconify-fontawesome:2.2.2'
+    compile 'com.shawnlin:number-picker:2.4.4'
 
     compile 'com.squareup.okhttp3:okhttp:3.8.1'
     compile 'com.squareup.okhttp3:logging-interceptor:3.8.1'

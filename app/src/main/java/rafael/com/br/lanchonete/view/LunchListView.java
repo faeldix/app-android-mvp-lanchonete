@@ -15,9 +15,6 @@ public interface LunchListView extends BaseView {
     void showListOfLunch(List<Lunch> list);
     void showOptionsOfLunch(Lunch lunch);
 
-    public void showSuccessMessageOfOrder();
-
+    void showSuccessMessageOfOrder();
     void goToCustomize(Lunch lunch);
-    void goToOrderFinish(Lunch lunch);
-
 }

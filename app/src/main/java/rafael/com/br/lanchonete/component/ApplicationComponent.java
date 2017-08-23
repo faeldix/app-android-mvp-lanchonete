@@ -14,6 +14,7 @@ import rafael.com.br.lanchonete.api.API;
 import rafael.com.br.lanchonete.module.ApplicationModule;
 import rafael.com.br.lanchonete.module.HTTPModule;
 import rafael.com.br.lanchonete.module.ServiceModule;
+import rafael.com.br.lanchonete.service.IngredientService;
 import rafael.com.br.lanchonete.service.LunchService;
 import rafael.com.br.lanchonete.service.OrderService;
 import rafael.com.br.lanchonete.service.PromoService;
@@ -35,6 +36,7 @@ public interface ApplicationComponent {
     LunchService provideServiceLunch();
     OrderService provideOrderService();
     PromoService providePromoService();
+    IngredientService provideIngredientService();
 
     void inject(App application);
 

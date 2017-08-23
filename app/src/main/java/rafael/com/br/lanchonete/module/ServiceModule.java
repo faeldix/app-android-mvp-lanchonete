@@ -5,6 +5,8 @@ import javax.inject.Singleton;
 import dagger.Module;
 import dagger.Provides;
 import rafael.com.br.lanchonete.api.API;
+import rafael.com.br.lanchonete.service.IngredientService;
+import rafael.com.br.lanchonete.service.IngredientServiceRESTImpl;
 import rafael.com.br.lanchonete.service.LunchService;
 import rafael.com.br.lanchonete.service.LunchServiceRESTImpl;
 import rafael.com.br.lanchonete.service.OrderService;
@@ -32,6 +34,11 @@ public class ServiceModule {
     @Singleton @Provides
     public PromoService providePromoService(API api){
         return new PromoServiceRESTImpl(api);
+    }
+
+    @Singleton @Provides
+    public IngredientService provideIngredientService(API api){
+        return new IngredientServiceRESTImpl(api);
     }
 
 }

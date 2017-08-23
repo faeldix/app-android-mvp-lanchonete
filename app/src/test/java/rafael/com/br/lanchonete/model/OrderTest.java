@@ -66,7 +66,7 @@ public class OrderTest {
 
         assertEquals(order.getDescriptionOfIngredientsExtras(), i1.getName());
 
-        lunch.addIngredient(i2);
+        order.getLunch().addIngredient(i2);
 
         assertEquals(order.getDescriptionOfIngredientsExtras(),
                 i1.getName()

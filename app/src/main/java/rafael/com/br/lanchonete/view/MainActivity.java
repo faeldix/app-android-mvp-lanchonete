@@ -32,6 +32,7 @@ public class MainActivity extends BaseActivity implements MainView {
 
     @BindView(R.id.bottom_navigation)
     BottomNavigationView navigation;
+
     @Inject
     LunchListView lunchs;
 

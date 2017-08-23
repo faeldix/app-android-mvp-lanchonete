@@ -15,10 +15,10 @@ public class ProgressManager {
 
     public ProgressManager(Activity context) {
         this.activity = (Activity) context;
+        this.dialog = new ProgressDialog(context);
     }
 
     public synchronized void show() {
-        dialog = new ProgressDialog(activity);
         dialog.setTitle("Atenção");
         dialog.setMessage("Aguarde um instance...");
 
@@ -29,6 +29,10 @@ public class ProgressManager {
     public synchronized void dismiss() {
         if(dialog != null && dialog.isShowing())
             dialog.dismiss();
+    }
+
+    public synchronized ProgressDialog getDialog() {
+        return dialog;
     }
 
 }
