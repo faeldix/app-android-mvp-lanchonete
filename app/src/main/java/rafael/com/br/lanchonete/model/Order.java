@@ -63,15 +63,17 @@ public class Order {
     }
 
     public String getDescriptionOfIngredientsExtras(){
-        StringBuilder builder = new StringBuilder();
+        if(extras.isEmpty())
+            return lunch.getIngredientListDescription();
+
+        StringBuilder builder = new StringBuilder(lunch.getIngredientListDescription());
 
         for (Ingredient ingredient : extras){
-            builder.append(ingredient.getName());
             builder.append(", ");
+            builder.append(ingredient.getName());
         }
 
-        int last = builder.lastIndexOf(",");
-        return last > 0 ?  builder.substring(0, last) : builder.toString();
+        return builder.toString();
     }
 
     //TODO make a cache for this value

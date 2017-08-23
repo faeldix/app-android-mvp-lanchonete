@@ -51,6 +51,9 @@ public class Lunch {
     }
 
     public String getIngredientListDescription(){
+        if(ingredients.isEmpty())
+            return "";
+
         StringBuilder builder = new StringBuilder();
 
         for (Ingredient ingredient : ingredients){

@@ -10,6 +10,7 @@ import org.junit.runner.RunWith;
 import org.mockito.Mock;
 import org.mockito.Mockito;
 import org.mockito.MockitoAnnotations;
+import org.mockito.Spy;
 import org.mockito.runners.MockitoJUnitRunner;
 
 import java.lang.reflect.Array;
@@ -36,6 +37,9 @@ import rafael.com.br.lanchonete.RxJavaJUnitRule;
 import rafael.com.br.lanchonete.model.Ingredient;
 import rafael.com.br.lanchonete.model.Lunch;
 
+import static junit.framework.Assert.*;
+import static org.mockito.Mockito.*;
+
 /**
  * Created by rafael-iteris on 15/08/17.
  */
@@ -46,6 +50,9 @@ public class LunchTest {
     @Mock
     private Ingredient mockIngredient;
 
+    @Spy
+    private Lunch lunch;
+
     private BigDecimal price = BigDecimal.ONE;
 
     @Before
@@ -54,24 +61,50 @@ public class LunchTest {
     }
 
     @Test
+    public void theListOfIngredientsMustBeSeparatedByCommasIfNeeded(){
+        Ingredient i1 = mock(Ingredient.class);
+        Ingredient i2 = mock(Ingredient.class);
+
+        when(i1.getName()).thenReturn("Carne");
+        when(i2.getName()).thenReturn("Queijo");
+
+        assertEquals(lunch.getIngredientListDescription(), "");
+
+        lunch.addIngredient(i1);
+
+        assertEquals(lunch.getIngredientListDescription(), i1.getName());
+
+        lunch.addIngredient(i2);
+
+        assertEquals(lunch.getIngredientListDescription(),
+                            i1.getName()
+                                    .concat(", ")
+                                    .concat(i2.getName()));
+
+        lunch.removeIngredient(i2);
+
+        assertEquals(lunch.getIngredientListDescription(), i1.getName());
+    }
+
+    @Test
     public void priceMustBeASumOfIngredientsPrice(){
-        Mockito.when(mockIngredient.getPrice()).thenReturn(price);
+        when(mockIngredient.getPrice()).thenReturn(price);
 
         Lunch lunch = new Lunch();
 
         /* with zero ingredients */
 
-        Assert.assertEquals(BigDecimal.ZERO, lunch.getPrice());
+        assertEquals(BigDecimal.ZERO, lunch.getPrice());
 
         /* add one ingredient */
 
         lunch.addIngredient(mockIngredient);
-        Assert.assertEquals(price, lunch.getPrice());
+        assertEquals(price, lunch.getPrice());
 
         /* add two ingredient */
 
         lunch.addIngredient(mockIngredient);
-        Assert.assertEquals(price.multiply(BigDecimal.valueOf(2)), lunch.getPrice());
+        assertEquals(price.multiply(BigDecimal.valueOf(2)), lunch.getPrice());
     }
 
 

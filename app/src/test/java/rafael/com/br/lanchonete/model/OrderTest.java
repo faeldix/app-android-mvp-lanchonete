@@ -21,6 +21,7 @@ import rafael.com.br.lanchonete.model.Ingredient;
 import rafael.com.br.lanchonete.model.Lunch;
 import rafael.com.br.lanchonete.model.Order;
 
+import static junit.framework.Assert.assertEquals;
 import static org.mockito.Mockito.*;
 
 /**
@@ -39,6 +40,9 @@ public class OrderTest {
     @Spy
     private Ingredient mockIngredient;
 
+    @Spy
+    private Lunch lunch;
+
     private BigDecimal price = BigDecimal.ONE;
 
     @Before
@@ -46,6 +50,59 @@ public class OrderTest {
         MockitoAnnotations.initMocks(this);
 
         when(mockIngredient.getPrice()).thenReturn(price);
+    }
+
+
+    @Test
+    public void theListOfIngredientsOfLunchAndExtrasMustBeSeparatedByCommasIfNeeded(){
+        Ingredient i1 = mock(Ingredient.class);
+        Ingredient i2 = mock(Ingredient.class);
+
+        when(i1.getName()).thenReturn("Carne");
+        when(i2.getName()).thenReturn("Queijo");
+
+        order.setLunch(lunch);
+        order.getLunch().addIngredient(i1);
+
+        assertEquals(order.getDescriptionOfIngredientsExtras(), i1.getName());
+
+        lunch.addIngredient(i2);
+
+        assertEquals(order.getDescriptionOfIngredientsExtras(),
+                i1.getName()
+                        .concat(", ")
+                        .concat(i2.getName()));
+
+        order.addIngredient(i1);
+
+        assertEquals(order.getDescriptionOfIngredientsExtras(),
+                i1.getName()
+                        .concat(", ")
+                        .concat(i2.getName())
+                        .concat(", ")
+                        .concat(i1.getName()));
+
+        order.addIngredient(i2);
+
+        assertEquals(order.getDescriptionOfIngredientsExtras(),
+                i1.getName()
+                        .concat(", ")
+                        .concat(i2.getName())
+                        .concat(", ")
+                        .concat(i1.getName())
+                        .concat(", ")
+                        .concat(i2.getName())
+        );
+
+        order.removeIngredient(i1);
+
+        assertEquals(order.getDescriptionOfIngredientsExtras(),
+                i1.getName()
+                        .concat(", ")
+                        .concat(i2.getName())
+                        .concat(", ")
+                        .concat(i2.getName())
+        );
     }
 
     @Test
