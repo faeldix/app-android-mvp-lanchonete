@@ -31,6 +31,8 @@ public class IngredientAdapter extends Adapter<IngredientAdapter.ItemViewHolder>
     private OnIngredientModifierListener listener;
     private Picasso picasso;
 
+    public IngredientAdapter() {}
+
     public IngredientAdapter(List<Ingredient> ingredients, Picasso picasso, OnIngredientModifierListener listener) {
         this.ingredients = ingredients;
         this.listener = listener;

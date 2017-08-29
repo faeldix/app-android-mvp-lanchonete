@@ -1,6 +1,5 @@
 package rafael.com.br.lanchonete.presenter;
 
-import rafael.com.br.lanchonete.view.MainPresenter;
 import rafael.com.br.lanchonete.view.MainView;
 
 /**
@@ -10,6 +9,8 @@ import rafael.com.br.lanchonete.view.MainView;
 public class MainPresenterImpl implements MainPresenter {
 
     private MainView view;
+
+    public MainPresenterImpl() {}
 
     public MainPresenterImpl(MainView view) {
         this.view = view;
@@ -30,4 +31,13 @@ public class MainPresenterImpl implements MainPresenter {
         view.showListOfPromosFragment();
     }
 
+    @Override
+    public MainView getView() {
+        return view;
+    }
+
+    @Override
+    public void setView(MainView view) {
+        this.view = view;
+    }
 }

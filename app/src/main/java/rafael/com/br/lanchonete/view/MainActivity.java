@@ -1,14 +1,11 @@
 package rafael.com.br.lanchonete.view;
 
-import android.content.Context;
 import android.support.annotation.NonNull;
 import android.support.design.widget.BottomNavigationView;
 import android.support.v4.app.Fragment;
 import android.support.v4.app.FragmentTransaction;
 import android.os.Bundle;
-import android.support.v7.widget.Toolbar;
 import android.view.MenuItem;
-import android.widget.LinearLayout;
 
 import com.joanzapata.iconify.IconDrawable;
 import com.joanzapata.iconify.fonts.FontAwesomeIcons;
@@ -20,10 +17,8 @@ import butterknife.ButterKnife;
 import rafael.com.br.lanchonete.R;
 import rafael.com.br.lanchonete.component.DaggerMainViewComponent;
 import rafael.com.br.lanchonete.module.MainModule;
-import rafael.com.br.lanchonete.presenter.MainPresenterImpl;
-import rafael.com.br.lanchonete.view.BaseFragment;
-import rafael.com.br.lanchonete.view.LunchListView;
-import rafael.com.br.lanchonete.view.OrderListView;
+import rafael.com.br.lanchonete.presenter.BasePresenter;
+import rafael.com.br.lanchonete.presenter.MainPresenter;
 
 import static android.support.design.widget.BottomNavigationView.*;
 import static dagger.android.AndroidInjection.inject;
@@ -118,6 +113,7 @@ public class MainActivity extends BaseActivity implements MainView {
 
     public void show(Fragment fragment){
         FragmentTransaction tx = getSupportFragmentManager().beginTransaction();
+        tx.setTransition(FragmentTransaction.TRANSIT_ENTER_MASK);
         tx.replace(R.id.main_container, fragment);
         tx.commit();
     }

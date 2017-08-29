@@ -25,12 +25,16 @@ public class IngredientServiceRESTImpl implements IngredientService {
 
     private API api;
 
+    public IngredientServiceRESTImpl() {}
+
     public IngredientServiceRESTImpl(API api) {
         this.api = api;
     }
 
     @Override
     public void getListOfIngredients(BaseRequestCallback<List<Ingredient>, RuntimeException> callback) {
+        callback.onStart();
+
         request()
                 .onErrorResumeNext(getCallbackOfError(callback))
                 .subscribe(getCallbackOfSuccess(callback));
@@ -69,6 +73,14 @@ public class IngredientServiceRESTImpl implements IngredientService {
                 return empty();
             }
         };
+    }
+
+    public API getApi() {
+        return api;
+    }
+
+    public void setApi(API api) {
+        this.api = api;
     }
 
 }

@@ -26,6 +26,8 @@ public class CustomLunchPresenterImpl implements CustomLunchPresenter, Ingredien
 
     private Order order = new Order();
 
+    public CustomLunchPresenterImpl() {}
+
     public CustomLunchPresenterImpl(LunchService lunchService, IngredientService ingredientService) {
         this.lunchService = lunchService;
         this.ingredientService = ingredientService;
@@ -33,7 +35,14 @@ public class CustomLunchPresenterImpl implements CustomLunchPresenter, Ingredien
 
     @Override
     public void getLunchInfo(Integer id) {
-        lunchService.getInfoOfLunch(id, new BaseRequestCallback<Lunch, RuntimeException>() {
+        if(view == null)
+            throw new IllegalStateException("A view esta nula.");
+
+        lunchService.getInfoOfLunch(id, getLunchInfoRequestCallback());
+    }
+
+    public BaseRequestCallback<Lunch, RuntimeException> getLunchInfoRequestCallback(){
+        return new BaseRequestCallback<Lunch, RuntimeException>() {
 
             @Override
             public void onSuccess(Lunch result) {
@@ -59,12 +68,19 @@ public class CustomLunchPresenterImpl implements CustomLunchPresenter, Ingredien
                     view.onDismissLoading();
             }
 
-        });
+        };
     }
 
     @Override
     public void getListOfIngredients() {
-        ingredientService.getListOfIngredients(new BaseRequestCallback<List<Ingredient>, RuntimeException>() {
+        if(view == null)
+            throw new IllegalStateException("A view esta nula.");
+
+        ingredientService.getListOfIngredients(getListOfIngredientsRequestCallback());
+    }
+
+    public BaseRequestCallback<List<Ingredient>, RuntimeException> getListOfIngredientsRequestCallback(){
+        return new BaseRequestCallback<List<Ingredient>, RuntimeException>() {
 
             @Override
             public void onSuccess(List<Ingredient> result) {
@@ -88,7 +104,7 @@ public class CustomLunchPresenterImpl implements CustomLunchPresenter, Ingredien
                     view.onDismissLoading();
             }
 
-        });
+        };
     }
 
     @Override
@@ -105,6 +121,10 @@ public class CustomLunchPresenterImpl implements CustomLunchPresenter, Ingredien
         view.showTotalPrice(order.getFinalPrice());
     }
 
+    public Order getOrder() {
+        return order;
+    }
+
     public CustomLunchView getView() {
         return view;
     }
@@ -113,8 +133,23 @@ public class CustomLunchPresenterImpl implements CustomLunchPresenter, Ingredien
         this.view = view;
     }
 
-    public Order getOrder() {
-        return order;
+    public IngredientService getIngredientService() {
+        return ingredientService;
     }
 
+    public void setIngredientService(IngredientService ingredientService) {
+        this.ingredientService = ingredientService;
+    }
+
+    public LunchService getLunchService() {
+        return lunchService;
+    }
+
+    public void setLunchService(LunchService lunchService) {
+        this.lunchService = lunchService;
+    }
+
+    public AtomicInteger getCounter() {
+        return counter;
+    }
 }

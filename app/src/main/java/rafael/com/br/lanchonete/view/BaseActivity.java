@@ -28,8 +28,11 @@ public abstract class BaseActivity extends AppCompatActivity implements BaseView
 
         manager = new ProgressManager(this);
 
-        getSupportActionBar().setDisplayHomeAsUpEnabled(true);
-        getSupportActionBar().setDisplayShowHomeEnabled(true);
+        if(!isTaskRoot()){
+            getSupportActionBar().setDisplayHomeAsUpEnabled(true);
+            getSupportActionBar().setDisplayShowHomeEnabled(true);
+        }
+
         inject();
     }
 
