@@ -72,6 +72,8 @@ public class CustomLunchActivity extends BaseActivity implements CustomLunchView
         setContentView(R.layout.activity_custom_lunch);
         ButterKnife.bind(this);
 
+        setTitle("Do seu Jeito");
+
         int lunchId = getIntent().getExtras().getInt(Constants.BUNDLE_KEY_LUNCH_ID);
 
         presenter.getListOfIngredients();
