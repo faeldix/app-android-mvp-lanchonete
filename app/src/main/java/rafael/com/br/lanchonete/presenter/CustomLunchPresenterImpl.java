@@ -10,6 +10,7 @@ import rafael.com.br.lanchonete.model.Order;
 import rafael.com.br.lanchonete.service.BaseRequestCallback;
 import rafael.com.br.lanchonete.service.IngredientService;
 import rafael.com.br.lanchonete.service.LunchService;
+import rafael.com.br.lanchonete.service.OrderService;
 import rafael.com.br.lanchonete.view.CustomLunchView;
 
 /**
@@ -20,6 +21,7 @@ public class CustomLunchPresenterImpl implements CustomLunchPresenter, Ingredien
 
     private LunchService lunchService;
     private IngredientService ingredientService;
+    private OrderService orderService;
 
     private CustomLunchView view;
     private AtomicInteger counter = new AtomicInteger(0);
@@ -28,9 +30,10 @@ public class CustomLunchPresenterImpl implements CustomLunchPresenter, Ingredien
 
     public CustomLunchPresenterImpl() {}
 
-    public CustomLunchPresenterImpl(LunchService lunchService, IngredientService ingredientService) {
+    public CustomLunchPresenterImpl(LunchService lunchService, IngredientService ingredientService, OrderService orderService) {
         this.lunchService = lunchService;
         this.ingredientService = ingredientService;
+        this.orderService = orderService;
     }
 
     @Override
@@ -102,6 +105,37 @@ public class CustomLunchPresenterImpl implements CustomLunchPresenter, Ingredien
             public void onEnd() {
                 if(counter.decrementAndGet() == 0)
                     view.onDismissLoading();
+            }
+
+        };
+    }
+
+    @Override
+    public void finalizeOrder() {
+        orderService.createOrder(order, getOrderCreateRequest());
+    }
+
+    public BaseRequestCallback<Order, RuntimeException> getOrderCreateRequest(){
+        return new BaseRequestCallback<Order, RuntimeException>() {
+
+            @Override
+            public void onSuccess(Order result) {
+                view.showMessageOfSuccessOfOrder("Pedido solicitado com sucesso.");
+            }
+
+            @Override
+            public void onErro(RuntimeException err) {
+                view.showMessageOfError("Ocorreu um erro ao finalizar o pedido.");
+            }
+
+            @Override
+            public void onStart() {
+                view.onShowLoading();
+            }
+
+            @Override
+            public void onEnd() {
+                view.onDismissLoading();
             }
 
         };

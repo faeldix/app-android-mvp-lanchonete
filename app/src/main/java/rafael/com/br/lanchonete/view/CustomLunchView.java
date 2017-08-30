@@ -13,6 +13,7 @@ import rafael.com.br.lanchonete.model.Lunch;
 public interface CustomLunchView extends BaseView {
 
     public void showMessageOfError(String err);
+    public void showMessageOfSuccessOfOrder(String succ);
 
     public void showInfoLunch(Lunch lunch);
     public void showListOfIngredients(List<Ingredient> ingredients);

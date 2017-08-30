@@ -2,6 +2,8 @@ package rafael.com.br.lanchonete.service;
 
 import android.util.Log;
 
+import com.google.gson.JsonArray;
+
 import org.json.JSONArray;
 
 import java.math.BigDecimal;
@@ -206,12 +208,12 @@ public class OrderServiceRESTImpl implements OrderService {
 
     public Observable<OrderResponseVO> getCreateOrderRequest(Order order){
         AddOrderRequestVO vo = new AddOrderRequestVO();
-        vo.itens = fromIterable(order.getExtras())
-                .collectInto(new JSONArray(), new BiConsumer<JSONArray, Ingredient>() {
+
+        vo.itens = fromIterable(order.getExtras()).collectInto(new JsonArray(), new BiConsumer<JsonArray, Ingredient>() {
 
             @Override
-            public void accept(JSONArray array, Ingredient ingredient) throws Exception {
-                array.put(ingredient.getId());
+            public void accept(JsonArray array, Ingredient ingredient) throws Exception {
+                array.add(ingredient.getId());
             }
 
         }).blockingGet();

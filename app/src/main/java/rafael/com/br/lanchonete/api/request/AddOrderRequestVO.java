@@ -1,5 +1,9 @@
 package rafael.com.br.lanchonete.api.request;
 
+import com.google.gson.JsonArray;
+import com.google.gson.JsonPrimitive;
+import com.google.gson.annotations.SerializedName;
+
 import org.json.JSONArray;
 
 /**
@@ -8,6 +12,7 @@ import org.json.JSONArray;
 
 public class AddOrderRequestVO {
 
-    public JSONArray itens;
+    @SerializedName("extras")
+    public JsonArray itens;
 
 }

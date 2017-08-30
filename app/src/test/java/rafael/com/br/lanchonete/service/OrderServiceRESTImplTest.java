@@ -1,5 +1,7 @@
 package rafael.com.br.lanchonete.service;
 
+import com.google.gson.JsonArray;
+
 import junit.framework.Assert;
 
 import org.json.JSONArray;
@@ -178,10 +180,10 @@ public class OrderServiceRESTImplTest {
 
     public AddOrderRequestVO createAddOrderRequestVO(Order order){
         AddOrderRequestVO vo = new AddOrderRequestVO();
-        vo.itens = new JSONArray();
+        vo.itens = new JsonArray();
 
         for (Ingredient item : order.getExtras()){
-            vo.itens.put(item.getId());
+            vo.itens.add(item.getId());
         }
 
         return vo;

@@ -5,10 +5,14 @@ import android.support.design.widget.BottomNavigationView;
 import android.support.v4.app.Fragment;
 import android.support.v4.app.FragmentTransaction;
 import android.os.Bundle;
+import android.util.Log;
 import android.view.MenuItem;
 
 import com.joanzapata.iconify.IconDrawable;
 import com.joanzapata.iconify.fonts.FontAwesomeIcons;
+
+import org.json.JSONArray;
+import org.json.JSONException;
 
 import javax.inject.Inject;
 
@@ -47,6 +51,14 @@ public class MainActivity extends BaseActivity implements MainView {
         ButterKnife.bind(this);
 
         configureColorOfIconsAtNavbar();
+
+        JSONArray json = new JSONArray();
+        json.put(1);
+        json.put(2);
+        json.put(3);
+        json.put(4);
+
+        Log.i("INFO", "json: " + json.toString());
 
         navigation.setOnNavigationItemSelectedListener(getNavigationListener());
         navigation.setSelectedItemId(R.id.bar_lunch_list);

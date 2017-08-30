@@ -8,6 +8,7 @@ import android.support.v7.widget.RecyclerView;
 import android.widget.Button;
 import android.widget.ImageView;
 import android.widget.TextView;
+import android.widget.Toast;
 
 import com.squareup.picasso.Picasso;
 
@@ -87,6 +88,12 @@ public class CustomLunchActivity extends BaseActivity implements CustomLunchView
     }
 
     @Override
+    public void showMessageOfSuccessOfOrder(String succ) {
+        Toast.makeText(getContext(), succ, Toast.LENGTH_SHORT).show();
+        onBackPressed();
+    }
+
+    @Override
     public void showInfoLunch(Lunch lunch) {
         lunchName.setText(lunch.getName());
         lunchPrice.setText(lunch.getPrice().toString());
@@ -118,7 +125,7 @@ public class CustomLunchActivity extends BaseActivity implements CustomLunchView
 
     @OnClick(R.id.btn_finalize_order)
     public void finalizeOrder(){
-
+        presenter.finalizeOrder();
     }
 
     @Override
